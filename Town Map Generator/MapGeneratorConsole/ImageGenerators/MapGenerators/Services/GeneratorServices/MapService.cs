@@ -34,7 +34,7 @@ namespace TerrainGenerator.Services.GeneratorServices
             //Program.ResetMap();
 
             VoronoiGraph voronoiMap = null;
-            Smooth(loadMapParams);
+            //Smooth(loadMapParams);
 
             //voronoiMap = Fortune.ComputeVoronoiGraph(loadMapParams.Points);
             var mapper = new VoronoiMapper(loadMapParams.Points);

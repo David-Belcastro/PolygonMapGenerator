@@ -152,12 +152,11 @@ namespace TerrainGenerator.Services
             }
         }
 
-        public void Draw(Graphics finalimage)
+        public void Draw(Graphics finalimage, int basesize, int mapsize)
         {
-            var bitmap = new Bitmap(MapX, MapY);
             foreach (Center center in MapGenService.Centers.Values)
             {
-                center.Draw(finalimage);
+                center.Draw(finalimage, basesize, mapsize);
             }
         }
 

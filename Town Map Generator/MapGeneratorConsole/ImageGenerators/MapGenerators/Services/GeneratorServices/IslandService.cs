@@ -4,6 +4,7 @@ using System.Linq;
 using TerrainGenerator.Helpers;
 using TerrainGenerator.Models;
 using SlimDX;
+using MapGeneratorConsole.Utilities;
 
 namespace TerrainGenerator.Services.GeneratorServices
 {
@@ -14,6 +15,7 @@ namespace TerrainGenerator.Services.GeneratorServices
 
     public class IslandService : IIslandService
     {
+        private int counter;
         public double MapMaxHeight = 0.0d;
         public double MapDeepest = 1.0d;
         private int _mapX;
@@ -148,21 +150,29 @@ namespace TerrainGenerator.Services.GeneratorServices
                     (first.Point.Z + second.Point.Z) / 2);
 
             }
-
-
+            Console.WriteLine("Setting Biomes...");
+            var islandprogress = new ProgressBar();
+            counter = 0;
             foreach (Corner corner in _mapGen.Corners.Values.SelectMany(x => x))
             {
                 corner.SetBiome();
+                counter++;
+                islandprogress.Report((double)counter / _mapGen.Corners.Values.Count);
             }
 
+            Console.WriteLine("\rSetting Elevations...");
+            counter = 0;
             foreach (var center in _mapGen.Centers.Values)
             {
                 
                 center.Elevation = (float)(center.Corners.Sum(x => x.Elevation) / center.Corners.Count());
+                counter++;
+                islandprogress.Report((double) counter / _mapGen.Centers.Values.Count);
             }
 
-            
 
+            Console.WriteLine("\rSetting Moistures and Polys...");
+            counter = 0;
             foreach (var ct in _mapGen.Centers.Values)
             {
 
@@ -171,6 +181,9 @@ namespace TerrainGenerator.Services.GeneratorServices
                 ct.SetBiome();
 
                 ct.GetPolygons();
+                counter++;
+                islandprogress.Report((double)counter / _mapGen.Centers.Values.Count);
+
             }
 
             

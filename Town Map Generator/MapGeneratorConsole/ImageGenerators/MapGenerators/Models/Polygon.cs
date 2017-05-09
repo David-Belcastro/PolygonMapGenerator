@@ -58,8 +58,9 @@ namespace TerrainGenerator.Models
             return ((A.X - C.X) * (B.Z - C.Z) - (A.Z - C.Z) * (B.X - C.X)) / 2;
         }
 
-        public void Draw(Graphics finalimage)
+        public void Draw(Graphics finalimage,  int basesize, int mapsize)
         {
+            float imageratio = mapsize / basesize;
             var brush = new SolidBrush(vertices[0].Color);
             var points = new PointF[3];
             points[0] = new PointF(vertices[0].Position.X, vertices[0].Position.Z);
@@ -72,7 +73,7 @@ namespace TerrainGenerator.Models
 
     public interface ITriangleHolder
     {
-        void Draw(Graphics finalimage);
+        void Draw(Graphics finalimage, int basesize, int mapsize);
     }
 
     public class Polygon : ITriangleHolder
@@ -99,11 +100,11 @@ namespace TerrainGenerator.Models
             }
         }
 
-        public void Draw(Graphics finalimage)
+        public void Draw(Graphics finalimage, int basesize, int mapsize)
         {
             foreach (Triangle triangle in tris)
             {
-                triangle.Draw(finalimage);
+                triangle.Draw(finalimage, basesize, mapsize);
             }
         }
 
@@ -172,11 +173,11 @@ namespace TerrainGenerator.Models
             tris.Add(new Triangle(center, a[5], a[0]));
         }
 
-        public void Draw(Graphics finalimage)
+        public void Draw(Graphics finalimage, int basesize, int mapsize)
         {
             foreach (Triangle triangle in tris)
             {
-                triangle.Draw( finalimage);
+                triangle.Draw( finalimage, basesize, mapsize);
             }
         }
     }

@@ -68,9 +68,9 @@ namespace TerrainGenerator.Models
         }
         #endregion
         
-        public void Draw(Graphics finalimage)
+        public void Draw(Graphics finalimage, int basesize, int mapsize)
         {
-            Polygon.Draw(finalimage);
+            Polygon.Draw(finalimage, basesize, mapsize);
         }
     }
 }

@@ -24,13 +24,13 @@ namespace Town_Map_Generator
             EnvironmentService = new EnvironmentService(_DrawRivers, seed, mapsize);
         }
 
-        internal void createimage(int basesize)
+        internal void createimage(int basesize, int mapsize)
         {
             var b = new Bitmap(basesize, basesize);
             var g = Graphics.FromImage(b);
-            EnvironmentService.Draw(g);
+            EnvironmentService.Draw(g, basesize, mapsize);
 
-            string savestring = string.Format("E:\\Projects\\Town Map Generator\\Images\\Image{0}.PNG", DateTime.Now.Ticks);
+            string savestring = string.Format("E:\\Projects\\MapGenerator\\Images\\Image{0}.PNG", DateTime.Now.Ticks);
             b.Save(@savestring, ImageFormat.Png);
 
         }

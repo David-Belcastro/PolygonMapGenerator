@@ -88,26 +88,27 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ImageGenerators\ImageGenerator.cs" />
-    <Compile Include="ImageGenerators\XnaMapGenerators\Helpers\MathHelper.cs" />
-    <Compile Include="ImageGenerators\XnaMapGenerators\Models\Biome.cs" />
-    <Compile Include="ImageGenerators\XnaMapGenerators\Models\Center.cs" />
-    <Compile Include="ImageGenerators\XnaMapGenerators\Models\Corner.cs" />
-    <Compile Include="ImageGenerators\XnaMapGenerators\Models\Edge.cs" />
-    <Compile Include="ImageGenerators\XnaMapGenerators\Models\Factory.cs" />
-    <Compile Include="ImageGenerators\XnaMapGenerators\Models\IMapItem.cs" />
-    <Compile Include="ImageGenerators\XnaMapGenerators\Models\LoadMapParams.cs" />
-    <Compile Include="ImageGenerators\XnaMapGenerators\Models\Map.cs" />
-    <Compile Include="ImageGenerators\XnaMapGenerators\Models\MapPoint.cs" />
-    <Compile Include="ImageGenerators\XnaMapGenerators\Models\Point.cs" />
-    <Compile Include="ImageGenerators\XnaMapGenerators\Models\Polygon.cs" />
-    <Compile Include="ImageGenerators\XnaMapGenerators\Models\River.cs" />
-    <Compile Include="ImageGenerators\XnaMapGenerators\Models\VertexPositionColorNormal.cs" />
-    <Compile Include="ImageGenerators\XnaMapGenerators\Services\EnvironmentService.cs" />
-    <Compile Include="ImageGenerators\XnaMapGenerators\Services\GeneratorServices\IslandService.cs" />
-    <Compile Include="ImageGenerators\XnaMapGenerators\Services\GeneratorServices\MapService.cs" />
-    <Compile Include="ImageGenerators\XnaMapGenerators\Services\MapGenService.cs" />
+    <Compile Include="ImageGenerators\MapGenerators\Helpers\MathHelper.cs" />
+    <Compile Include="ImageGenerators\MapGenerators\Models\Biome.cs" />
+    <Compile Include="ImageGenerators\MapGenerators\Models\Center.cs" />
+    <Compile Include="ImageGenerators\MapGenerators\Models\Corner.cs" />
+    <Compile Include="ImageGenerators\MapGenerators\Models\Edge.cs" />
+    <Compile Include="ImageGenerators\MapGenerators\Models\Factory.cs" />
+    <Compile Include="ImageGenerators\MapGenerators\Models\IMapItem.cs" />
+    <Compile Include="ImageGenerators\MapGenerators\Models\LoadMapParams.cs" />
+    <Compile Include="ImageGenerators\MapGenerators\Models\Map.cs" />
+    <Compile Include="ImageGenerators\MapGenerators\Models\MapPoint.cs" />
+    <Compile Include="ImageGenerators\MapGenerators\Models\Point.cs" />
+    <Compile Include="ImageGenerators\MapGenerators\Models\Polygon.cs" />
+    <Compile Include="ImageGenerators\MapGenerators\Models\River.cs" />
+    <Compile Include="ImageGenerators\MapGenerators\Models\VertexPositionColorNormal.cs" />
+    <Compile Include="ImageGenerators\MapGenerators\Services\EnvironmentService.cs" />
+    <Compile Include="ImageGenerators\MapGenerators\Services\GeneratorServices\IslandService.cs" />
+    <Compile Include="ImageGenerators\MapGenerators\Services\GeneratorServices\MapService.cs" />
+    <Compile Include="ImageGenerators\MapGenerators\Services\MapGenService.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\ProgressBar.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -40,7 +40,7 @@ namespace TerrainGenerator.Services
             var rnd = new Random(seed);
 
             points.Clear();
-            for (int i = 0; i < 5000; i++)
+            for (int i = 0; i < 16000; i++)
             {
                 points.Add(new Vector(Math.Abs(rnd.NextDouble() * EnvironmentService.MapX),
                                       Math.Abs(rnd.NextDouble() * EnvironmentService.MapZ)));

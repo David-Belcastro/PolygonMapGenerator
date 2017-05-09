@@ -20,8 +20,8 @@ namespace MapGeneratorConsole
 
 
             Console.WriteLine(mapsize);
-            var generator = new ImageGenerator(false, false, false, 7575425, mapsize??3600);
-            generator.createimage(mapsize??3600);
+            var generator = new ImageGenerator(false, false, false, new Random().Next(), mapsize??3600);
+            generator.createimage(mapsize ?? 3600, mapsize??3600);
             Console.WriteLine("All Done");
             Console.ReadLine();
         }
