@@ -5,15 +5,91 @@ using TerrainGenerator.Helpers;
 using TerrainGenerator.Models;
 using SlimDX;
 using MapGeneratorConsole.Utilities;
+using MapGeneratorConsole.ImageGenerators.MapGenerators.Helpers;
 
 namespace TerrainGenerator.Services.GeneratorServices
 {
-    public interface IIslandService
+    public interface ILandFormGenerator
     {
         void CreateIsland();
     }
 
-    public class IslandService : IIslandService
+    public abstract class LandFormGenerator
+    {
+
+        protected MapGenService _mapGen;
+
+        public void FixBorders(Center ct)
+        {
+            var ms = from p in ct.Borders.SelectMany(x => x.Corners)
+                     group p by p.Point
+                         into grouped
+                     select new { Point = grouped.Key, count = grouped.Count() };
+
+            var fpoint = ms.FirstOrDefault(x => x.count == 1);
+            var spoint = ms.LastOrDefault(x => x.count == 1);
+
+            if (fpoint != null & spoint != null)
+            {
+                Corner p1 = ct.Corners.FirstOrDefault(x => x.Point == fpoint.Point);
+                Corner p2 = ct.Corners.FirstOrDefault(x => x.Point == spoint.Point);
+
+                if (p1 == null || p2 == null)
+                    return;
+
+                IFactory fact = new DataFactory(_mapGen);
+                Edge e = fact.EdgeFactory(
+                    p1,
+                    p2,
+                    ct, null);
+
+                e.MapEdge = true;
+
+                p1.Protrudes.Add(e);
+                p2.Protrudes.Add(e);
+
+                e.VoronoiStart.Border = e.VoronoiEnd.Border = true;
+                e.VoronoiStart.Elevation = e.VoronoiEnd.Elevation = 0.0f;
+
+                ct.Borders.Add(e);
+            }
+        }
+
+        protected void AddTouchesAndNormals()
+        {
+            Console.WriteLine("Normalizing...");
+            var normalprogress = new ProgressBar();
+            var counter = 0;
+            foreach (Corner c in _mapGen.Corners.Values.SelectMany(x => x))
+            {
+                counter++;
+                foreach (Center ce in c.Touches)
+                {
+                    foreach (Corner co in ce.Corners)
+                    {
+                        if (c.Adjacents.Any(x => x.Point.X == co.Point.X && x.Point.Y == co.Point.Y && x.Point.Z == co.Point.Z))
+                        {
+                            var Norm = Vector3.Zero;
+
+                            if (BMathHelper.Area(ce.Point, c.Point, co.Point) < 0)
+                            {
+                                Norm = BMathHelper.CalculateNormal(ce.Point, c.Point, co.Point);
+                            }
+                            else
+                            {
+                                Norm = BMathHelper.CalculateNormal(ce.Point, co.Point, c.Point);
+                            }
+
+                            c.Normal = new Vector3(c.Normal.X + Norm.X, c.Normal.Y + Norm.Y, c.Normal.Z + Norm.Z);
+                        }
+                    }
+                }
+                normalprogress.Report((double)counter / _mapGen.Corners.Values.Count);
+            }
+        }
+    }
+
+    public class IslandService : LandFormGenerator, ILandFormGenerator
     {
         private int counter;
         public double MapMaxHeight = 0.0d;
@@ -21,7 +97,7 @@ namespace TerrainGenerator.Services.GeneratorServices
         private int _mapX;
         private int _mapY;
         private int _mapZ;
-        private MapGenService _mapGen;
+        private double LakeThreshold = .3;
 
         public IslandService(MapGenService mapgen, int mapX, int mapY, int mapZ)
         {
@@ -50,12 +126,9 @@ namespace TerrainGenerator.Services.GeneratorServices
                 //coasts are water , island is smaller ->
             }
 
-            CalculateElevations();
-            
-
-            
+            CalculateElevations();     
+                        
             CalculateCornerDownslopes();
-
             
             CalculateRivers();
 
@@ -99,30 +172,7 @@ namespace TerrainGenerator.Services.GeneratorServices
                 center.Elevation = (float)(center.Corners.Sum(x => x.Elevation) / center.Corners.Count());
             }
 
-            foreach (Corner c in _mapGen.Corners.Values.SelectMany(x => x))
-            {
-                foreach (Center ce in c.Touches)
-                {
-                    foreach (Corner co in ce.Corners)
-                    {
-                        if (c.Adjacents.Any(x => x.Point.X == co.Point.X && x.Point.Y == co.Point.Y && x.Point.Z == co.Point.Z))
-                        {
-                             var Norm = Vector3.Zero;
-
-                            if (BMathHelper.Area(ce.Point, c.Point, co.Point) < 0)
-                            {
-                                Norm = BMathHelper.CalculateNormal(ce.Point, c.Point, co.Point);
-                            }
-                            else
-                            {
-                                Norm = BMathHelper.CalculateNormal(ce.Point, co.Point, c.Point);
-                            }
-
-                            c.Normal = new Vector3(c.Normal.X + Norm.X, c.Normal.Y + Norm.Y, c.Normal.Z + Norm.Z);
-                        }
-                    }
-                }
-            }
+            AddTouchesAndNormals();
 
             for (int i = 0; i < 1; i++)
             {
@@ -394,11 +444,19 @@ namespace TerrainGenerator.Services.GeneratorServices
 
         private void FixCentersFloodFillOceans()
         {
+            int numwater = 0;
             foreach (var ct in _mapGen.Centers.Values)
             {
-                FixBorders(ct); //Fix Edges.Values at map border , set borders and oceans at borders
-                
+                //FixBorders(ct); //Fix Edges.Values at map border , set borders and oceans at borders
+                ct.Border = ct.Ocean = ct.Water = true;
                 //if it touches any water corner , it's water ; there will be leftovers tho
+                foreach (Corner crn in ct.Corners){
+                    if (crn.Water)
+                    {
+                        numwater++;
+                    }
+                }
+                //ct.Water = ct.Ocean || numwater >= ct.Corners.Count * LakeThreshold;
                 ct.Water = (ct.Corners.Any(x => x.Water)) ? true : false;
             }
 
@@ -430,51 +488,17 @@ namespace TerrainGenerator.Services.GeneratorServices
             }
         }
 
-        public void FixBorders(Center ct)
-        {
-            var ms = from p in ct.Borders.SelectMany(x => x.Corners)
-                     group p by p.Point
-                         into grouped
-                         select new { Point = grouped.Key, count = grouped.Count() };
-
-            var fpoint = ms.FirstOrDefault(x => x.count == 1);
-            var spoint = ms.LastOrDefault(x => x.count == 1);
-
-            if (fpoint != null & spoint != null)
-            {
-                Corner p1 = ct.Corners.FirstOrDefault(x => x.Point == fpoint.Point);
-                Corner p2 = ct.Corners.FirstOrDefault(x => x.Point == spoint.Point);
-
-                if (p1 == null || p2 == null)
-                    return;
-
-                IFactory fact = new DataFactory(_mapGen);
-                Edge e = fact.EdgeFactory(
-                    p1,
-                    p2,
-                    ct, null);
-
-                e.MapEdge = true;
-
-                p1.Protrudes.Add(e);
-                p2.Protrudes.Add(e);
-
-                ct.Border = ct.Ocean = ct.Water = true;
-                e.VoronoiStart.Border = e.VoronoiEnd.Border = true;
-                e.VoronoiStart.Elevation = e.VoronoiEnd.Elevation = 0.0f;
-
-                ct.Borders.Add(e);
-            }
-        }
-
         private bool InLand(Vector3 p)
         {
+           // var coinflip = new Random();
+           // return coinflip.NextDouble() > 0.5;
             return IsLandShape(new Vector3((float) (2 * (p.X / _mapX - 0.5)), 0, (float) (2 * (p.Z / _mapZ - 0.5))));
+            // return IsPerlinShape(new Vector3((float) (2 * (p.X / _mapX - 0.5)), 0, (float) (2 * (p.Z / _mapZ - 0.5))));
         }
 
         private bool IsLandShape(Vector3 Vector3)
         {
-            double ISLAND_FACTOR = 1.02;
+            double ISLAND_FACTOR = 1.07;
             var islandRandom = new Random(_mapGen.mapseed);
             int bumps = islandRandom.Next(1, 6);
             double startAngle = islandRandom.NextDouble() * 2 * Math.PI;
@@ -493,6 +517,12 @@ namespace TerrainGenerator.Services.GeneratorServices
                 r1 = r2 = 0.2;
             }
             return (length < r1 || (length > r1 * ISLAND_FACTOR && length < r2));
+        }
+
+        private bool IsPerlinShape(Vector3 point)
+        {
+            var perlined = PerlinNoise.Perlin(point.X, point.Y, point.Z);
+            return (perlined > (0.3 + 0.3 * point.Length() * point.Length()));
         }
 
         private void CalculateElevations()

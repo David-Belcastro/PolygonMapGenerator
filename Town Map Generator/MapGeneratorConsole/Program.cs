@@ -23,7 +23,7 @@ namespace MapGeneratorConsole
             var generator = new ImageGenerator(false, false, false, new Random().Next(), mapsize??3600);
             generator.createimage(mapsize ?? 3600, mapsize??3600);
             Console.WriteLine("All Done");
-            Console.ReadLine();
+            //Console.ReadLine();
         }
 
         private static int? GetUserInputForMapSize(string userinput)

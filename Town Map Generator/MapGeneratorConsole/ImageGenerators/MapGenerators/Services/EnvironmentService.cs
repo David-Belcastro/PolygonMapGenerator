@@ -154,10 +154,58 @@ namespace TerrainGenerator.Services
 
         public void Draw(Graphics finalimage, int basesize, int mapsize)
         {
-            foreach (Center center in MapGenService.Centers.Values)
+
+            var colorlist = new List<Color>(new Color[] { Color.Aqua, Color.Blue, Color.Green, Color.Yellow, Color.Violet, Color.Black });
+            var counter = 0;
+            var triangulator = new ceometric.DelaunayTriangulator.DelaunayTriangulation2d();
+            var points = new List<ceometric.DelaunayTriangulator.Point>();
+            var cornerpoints = new List<ceometric.DelaunayTriangulator.Point>();
+            foreach (MapGeneratorConsole.CubesFortune.VoronoiSegment seg in MapGenService._mapService.mapgraphy.graph)
             {
-                center.Draw(finalimage, basesize, mapsize);
+                points.Add(new ceometric.DelaunayTriangulator.Point(seg.start.X, seg.start.Y, 0));
+                float imageratio = mapsize / basesize;
+                var pen = new SolidBrush(Color.Red);
+                var randomizer = new System.Random();
+                var cornerpen = new Pen(Color.Green);
+                finalimage.FillRectangle(pen, (float)seg.start.X * imageratio, (float)seg.start.Y * imageratio, 2, 2);
+                if (seg.completed)
+                {
+                    finalimage.DrawLine(cornerpen, (float)seg.start.X * imageratio, (float)seg.start.Y * imageratio, (float)seg.end.X * imageratio, (float)seg.end.Y * imageratio);
+                }
+                //finalimage.FillRectangle(cornerpen, crn.Point.X * imageratio, crn.Point.Z * imageratio, 2, 2);
+                //foreach (Corner crn in center.Corners)
+                //{
+                //    cornerpoints.Add(new ceometric.DelaunayTriangulator.Point(crn.Point.X, crn.Point.Z, crn.Point.Y));
+                //}
+                //var currColor = colorlist[counter];
+                //center.Draw(finalimage, basesize, mapsize, currColor);
+                //counter++;ra
+                //if (counter+1 > colorlist.Capacity)
+                //{
+                //    counter = 0; 
+                //}
+
             }
+            foreach (ceometric.DelaunayTriangulator.Point pt in MapGenService.points)
+            {
+                float imageratio = mapsize / basesize;
+                var pen = new SolidBrush(Color.Blue);
+                var randomizer = new System.Random();
+                var cornerpen = new SolidBrush(Color.Blue);
+                finalimage.FillRectangle(pen, (float)pt.X * imageratio, (float)pt.Y * imageratio, 2, 2);
+            }
+            //var triangles = triangulator.Triangulate(points);
+            //foreach (ceometric.DelaunayTriangulator.Triangle tri in triangles)
+            //{
+            //    tri.Draw(finalimage, basesize, mapsize, Color.Red);
+            //}
+            //cornerpoints.AddRange(points);
+            //var polytris = triangulator.Triangulate(cornerpoints);
+            //foreach (ceometric.DelaunayTriangulator.Triangle tri in polytris)
+            //{
+            //    tri.Draw(finalimage, basesize, mapsize, Color.Blue);
+            //    //find the centers, group those tris, draw as polygons with the corners.
+            //}
         }
 
 

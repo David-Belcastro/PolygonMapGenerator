@@ -133,6 +133,7 @@ namespace TerrainGenerator.Models
                 else
                 {
                     var nc = new Corner(ax, ay, az);
+
                     _mapGen.Corners[hash].Add(nc);
                     return nc;
                 }
@@ -142,9 +143,22 @@ namespace TerrainGenerator.Models
                 var a = new List<Corner>();
                 var nc = new Corner(ax, ay, az);
                 a.Add(nc);
-                _mapGen.Corners.Add(nc.Key, a);
+                if (!_mapGen.Corners.ContainsKey(nc.Key))
+                {
+                    _mapGen.Corners.Add(nc.Key, a);
+                }
                 return nc;
             }
+        }
+
+        public float minmax(float ptval)
+        {
+            if (ptval < 0){
+                return 0;
+            } else if (ptval > 100)
+            {
+                return 100;
+            } else { return ptval; }
         }
 
         public void RemoveEdge(Edge e)

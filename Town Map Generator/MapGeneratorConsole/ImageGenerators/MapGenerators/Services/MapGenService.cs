@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using BrnVoronoi.Models;
+using ceometric.DelaunayTriangulator;
 using WpfApplication1.Models;
 using TerrainGenerator.Models;
 using TerrainGenerator.Services.GeneratorServices;
+using MapGeneratorConsole.ImageGenerators.TownMapGen;
 
 namespace TerrainGenerator.Services
 {
@@ -17,11 +19,14 @@ namespace TerrainGenerator.Services
 
         public List<River> Rivers { get; set; }
         public bool subdivide;
-        private IMapService _mapService;
+        public IMapService _mapService;
         private int MapX;
         private int MapY;
         private int MapZ;
         public int mapseed;
+        public List<Point> points;
+
+        public MapGenService() { }
 
         public MapGenService(int mapX, int mapY, int mapZ, int seed, bool subdivide)
         {
@@ -34,19 +39,21 @@ namespace TerrainGenerator.Services
             MapX = mapX;
             MapY = mapY;
             MapZ = mapZ;
-            _mapService = new MapService(this,mapX,mapY,mapZ);
+            _mapService = new MapService(this,mapX,mapY,mapZ, new TownMapService(this, mapX, mapY, mapZ));
 
-            var points = new HashSet<Vector>();
+            points = new List<Point>();
             var rnd = new Random(seed);
 
             points.Clear();
-            for (int i = 0; i < 16000; i++)
+            for (int i = 0; i < mapX  ; i++)
             {
-                points.Add(new Vector(Math.Abs(rnd.NextDouble() * EnvironmentService.MapX),
-                                      Math.Abs(rnd.NextDouble() * EnvironmentService.MapZ)));
+                points.Add(new Point(Math.Abs(rnd.NextDouble() * EnvironmentService.MapX),
+                                      Math.Abs(rnd.NextDouble() * EnvironmentService.MapZ), 0));
             }
 
-            _mapService.LoadMap(new LoadMapParams(points, true));
+            _mapService.LoadMap(points);
+            _mapService.GenerateIsland();
+            
         }
 
         public void Draw()

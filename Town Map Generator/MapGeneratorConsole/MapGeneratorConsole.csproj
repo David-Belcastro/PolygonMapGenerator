@@ -73,6 +73,9 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Rhino.Mocks, Version=3.6.0.0, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
+      <HintPath>..\packages\RhinoMocks.3.6.1\lib\net\Rhino.Mocks.dll</HintPath>
+    </Reference>
     <Reference Include="SlimDX, Version=4.0.13.43, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9, processorArchitecture=x86">
       <HintPath>..\packages\SlimDX.4.0.13.44\lib\NET40\SlimDX.dll</HintPath>
     </Reference>
@@ -87,7 +90,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BrnVoronoi\Handlers\EventHandler.cs" />
+    <Compile Include="BrnVoronoi\Handlers\NodeHandler.cs" />
+    <Compile Include="BrnVoronoi\Helpers\Methods.cs" />
+    <Compile Include="BrnVoronoi\Models\Constants.cs" />
+    <Compile Include="BrnVoronoi\Models\Events.cs" />
+    <Compile Include="BrnVoronoi\Models\Nodes.cs" />
+    <Compile Include="BrnVoronoi\Models\PriorityQueue.cs" />
+    <Compile Include="BrnVoronoi\Models\Vector.cs" />
+    <Compile Include="BrnVoronoi\Models\VoronoiEdge.cs" />
+    <Compile Include="BrnVoronoi\Models\VoronoiGraph.cs" />
+    <Compile Include="BrnVoronoi\VoronoiMapper.cs" />
+    <Compile Include="CubesFortune\CubesVoronoiMapper.cs" />
+    <Compile Include="CubesFortune\EventQueue.cs" />
+    <Compile Include="CubesFortune\SweepTable.cs" />
+    <Compile Include="CubesFortune\VoronoiEvents.cs" />
+    <Compile Include="PointGens\Delaunay.cs" />
+    <Compile Include="PointGens\Edge.cs" />
     <Compile Include="ImageGenerators\ImageGenerator.cs" />
+    <Compile Include="ImageGenerators\MapGenerators\Helpers\perlin.cs" />
     <Compile Include="ImageGenerators\MapGenerators\Helpers\MathHelper.cs" />
     <Compile Include="ImageGenerators\MapGenerators\Models\Biome.cs" />
     <Compile Include="ImageGenerators\MapGenerators\Models\Center.cs" />
@@ -106,19 +127,16 @@
     <Compile Include="ImageGenerators\MapGenerators\Services\GeneratorServices\IslandService.cs" />
     <Compile Include="ImageGenerators\MapGenerators\Services\GeneratorServices\MapService.cs" />
     <Compile Include="ImageGenerators\MapGenerators\Services\MapGenService.cs" />
+    <Compile Include="ImageGenerators\TownMapGen\TownMapService.cs" />
+    <Compile Include="PointGens\Point.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PointGens\Triangle.cs" />
     <Compile Include="Utilities\ProgressBar.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\XnaMapGeneratorCode\BrnVoronoi\BrnVoronoi.csproj">
-      <Project>{9dbdc2b7-c872-482d-b1b6-954d51b93e48}</Project>
-      <Name>BrnVoronoi</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="LandMassGenerators\" />

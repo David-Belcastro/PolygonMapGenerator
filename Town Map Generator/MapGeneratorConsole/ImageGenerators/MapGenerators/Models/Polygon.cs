@@ -10,11 +10,11 @@ namespace TerrainGenerator.Models
 {
     public class Triangle
     {
-        private VertexPositionNormalColor[] vertices = new VertexPositionNormalColor[3];
-
+        public VertexPositionNormalColor[] vertices = new VertexPositionNormalColor[3];
+        bool drawTextures = false;
         public Triangle(Center center, Corner second, Corner third)
         {
-            bool drawTextures = true;
+            
 
             if (Area(center.Point, second.Point, third.Point) > 0)
             {
@@ -62,11 +62,15 @@ namespace TerrainGenerator.Models
         {
             float imageratio = mapsize / basesize;
             var brush = new SolidBrush(vertices[0].Color);
+            var pen = new Pen(Color.Black);
             var points = new PointF[3];
-            points[0] = new PointF(vertices[0].Position.X, vertices[0].Position.Z);
-            points[1] = new PointF(vertices[1].Position.X, vertices[1].Position.Z);
-            points[2] = new PointF(vertices[2].Position.X, vertices[2].Position.Z);
-
+            points[0] = new PointF(vertices[0].Position.X * imageratio, vertices[0].Position.Z * imageratio);
+            points[1] = new PointF(vertices[1].Position.X * imageratio, vertices[1].Position.Z * imageratio);
+            points[2] = new PointF(vertices[2].Position.X * imageratio, vertices[2].Position.Z * imageratio);
+            if (!drawTextures)
+            {
+                finalimage.DrawPolygon(pen, points);
+            }
             finalimage.FillPolygon(brush, points);
         }
     }
@@ -79,9 +83,11 @@ namespace TerrainGenerator.Models
     public class Polygon : ITriangleHolder
     {
         private List<Triangle> tris = new List<Triangle>();
+        private Center _center;
 
         public Polygon(HashSet<Corner> corners, Center center)
         {
+            _center = center;
             OrderCorners(center);
             CalculateNormals(center);
 
@@ -102,13 +108,45 @@ namespace TerrainGenerator.Models
 
         public void Draw(Graphics finalimage, int basesize, int mapsize)
         {
-            foreach (Triangle triangle in tris)
+             foreach (Triangle triangle in tris)
             {
                 triangle.Draw(finalimage, basesize, mapsize);
+             }
+            float imageratio = mapsize / basesize;
+            var pen = new Pen(Color.Goldenrod);
+            var points = new List<PointF>();
+            foreach (Triangle triangle in tris)
+            {
+
+                points.Add(new PointF(Minmax(triangle.vertices[0].Position.X * imageratio, mapsize), Minmax(triangle.vertices[0].Position.Y * imageratio, mapsize)));
+                points.Add(new PointF(Minmax(triangle.vertices[1].Position.X * imageratio, mapsize), Minmax(triangle.vertices[1].Position.Y * imageratio, mapsize)));
+
+                points.Add(new PointF(Minmax(triangle.vertices[2].Position.X * imageratio, mapsize), Minmax(triangle.vertices[2].Position.Y * imageratio, mapsize)));
             }
+
+                finalimage.DrawPolygon(pen, points.ToArray());
+
+
         }
 
-        public void OrderCorners(Center center)
+        public float Minmax(float ptvalue, int max)
+        {
+            if (ptvalue < 0)
+            {
+                return 0;
+            }
+            else if (ptvalue > max)
+            {
+                return max;
+            }
+            else
+            {
+                return ptvalue;
+            }
+            
+        }
+
+            public void OrderCorners(Center center)
         {
             var currentCorner = center.Corners.First();
             var ordered = new List<Corner>(center.Corners.Count);

@@ -68,9 +68,38 @@ namespace TerrainGenerator.Models
         }
         #endregion
         
-        public void Draw(Graphics finalimage, int basesize, int mapsize)
+        public void Draw(Graphics finalimage, int basesize, int mapsize, Color cornercolor)
         {
-            Polygon.Draw(finalimage, basesize, mapsize);
+            //Polygon.Draw(finalimage, basesize, mapsize);
+            float imageratio = mapsize / basesize;
+            var pen = new SolidBrush(Color.Red);
+            var randomizer = new Random();
+            var cornerpen = new SolidBrush(Color.Blue);
+            var points = new PointF[1];
+            finalimage.FillRectangle(pen, Point.X * imageratio, Point.Z * imageratio, 2, 2);
+            foreach (Corner crn in Corners)
+            {
+                finalimage.FillRectangle(cornerpen, crn.Point.X * imageratio, crn.Point.Z * imageratio, 2, 2);
+            }
+
         }
+
+        public float Minmax(float ptvalue, int max)
+        {
+            if (ptvalue < 0)
+            {
+                return 0;
+            }
+            else if (ptvalue > max)
+            {
+                return max;
+            }
+            else
+            {
+                return ptvalue;
+            }
+
+        }
+
     }
 }

@@ -26,9 +26,9 @@ namespace Town_Map_Generator
 
         internal void createimage(int basesize, int mapsize)
         {
-            var b = new Bitmap(basesize, basesize);
+            var b = new Bitmap(Math.Max(1000,Math.Min(mapsize, 10000)), Math.Max(1000, Math.Min(mapsize, 10000)));
             var g = Graphics.FromImage(b);
-            EnvironmentService.Draw(g, basesize, mapsize);
+            EnvironmentService.Draw(g, basesize, Math.Max(1000, Math.Min(mapsize, 10000)));
 
             string savestring = string.Format("E:\\Projects\\MapGenerator\\Images\\Image{0}.PNG", DateTime.Now.Ticks);
             b.Save(@savestring, ImageFormat.Png);
