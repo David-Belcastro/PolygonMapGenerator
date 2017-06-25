@@ -162,15 +162,15 @@ namespace TerrainGenerator.Services
             var cornerpoints = new List<ceometric.DelaunayTriangulator.Point>();
             foreach (MapGeneratorConsole.CubesFortune.VoronoiSegment seg in MapGenService._mapService.mapgraphy.graph)
             {
-                points.Add(new ceometric.DelaunayTriangulator.Point(seg.start.X, seg.start.Y, 0));
-                float imageratio = mapsize / basesize;
+                points.Add(new ceometric.DelaunayTriangulator.Point(seg.start.SafeX, seg.start.SafeY, 0));
+                float imageratio = 100f;
                 var pen = new SolidBrush(Color.Red);
                 var randomizer = new System.Random();
                 var cornerpen = new Pen(Color.Green);
-                finalimage.FillRectangle(pen, (float)seg.start.X * imageratio, (float)seg.start.Y * imageratio, 2, 2);
+                finalimage.FillRectangle(pen, (float)seg.start.SafeX * imageratio, (float)seg.start.SafeY * imageratio, 2, 2);
                 if (seg.completed)
                 {
-                    finalimage.DrawLine(cornerpen, (float)seg.start.X * imageratio, (float)seg.start.Y * imageratio, (float)seg.end.X * imageratio, (float)seg.end.Y * imageratio);
+                    finalimage.DrawLine(cornerpen, (float)seg.start.SafeX * imageratio, (float)seg.start.SafeY * imageratio, (float)seg.end.SafeX * imageratio, (float)seg.end.SafeY * imageratio);
                 }
                 //finalimage.FillRectangle(cornerpen, crn.Point.X * imageratio, crn.Point.Z * imageratio, 2, 2);
                 //foreach (Corner crn in center.Corners)
@@ -188,7 +188,7 @@ namespace TerrainGenerator.Services
             }
             foreach (ceometric.DelaunayTriangulator.Point pt in MapGenService.points)
             {
-                float imageratio = mapsize / basesize;
+                float imageratio = 100f;
                 var pen = new SolidBrush(Color.Blue);
                 var randomizer = new System.Random();
                 var cornerpen = new SolidBrush(Color.Blue);

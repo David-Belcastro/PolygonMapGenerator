@@ -19,13 +19,19 @@ namespace MapGeneratorConsole.CubesFortune
     public class CubesVoronoiMapper
     {
         public EventQueue eventQ;
+        public CircleQueue circleQ;
         public SweepTable regionsT;
+
+        public CubesVoronoiMapper()
+        {
+            eventQ = new EventQueue();
+            circleQ = new CircleQueue();
+            regionsT = new SweepTable();
+        }
 
         public VoronoiMap GimmesomeVeoroiois(List<Point> sites)
         {
-            eventQ = new EventQueue();
-            regionsT = new SweepTable();
-            
+
             foreach (Point pt in sites)
             {
                 var pointasevent = new SiteEvent(pt.X, pt.Y);
@@ -33,29 +39,35 @@ namespace MapGeneratorConsole.CubesFortune
             }
 
             while (!eventQ.IsEmpty())
-            {   
-                var currentPoint = eventQ.PeekAndRemoveSmallest();
-                if (currentPoint.IsSiteEvent)
+            {   if (!circleQ.IsEmpty() && circleQ.PeekSmallest().circleLength <= eventQ.PeekSmallest().X)
                 {
-                    ProcessSiteEvent(currentPoint);
+                    ProcessCircleEvent();
                 }
-                if (currentPoint.IsCircleEvent && currentPoint.isNodeValid)
+                else
                 {
-                    ProcessVertexEvent(currentPoint);
+                    ProcessPointEvent();
                 }
             }
+
+            while (!circleQ.IsEmpty())
+            {
+                ProcessCircleEvent();
+            }
+
             var finalmap = regionsT.FinishEdges();
             return finalmap;
         }
 
-        public void ProcessVertexEvent(IVoronoiPoint p)
+        public void ProcessCircleEvent()
         {
+            var p = circleQ.PeekAndRemoveSmallest();
             regionsT.ProcessCircleEvent(p);
             AddCreatedCircleEvents();
         }
 
-        public void ProcessSiteEvent(IVoronoiPoint p)
+        public void ProcessPointEvent()
         {
+            var p = eventQ.PeekAndRemoveSmallest();
             var pointAsEvent = new SiteEvent(p.X, p.Y);
             regionsT.AddToBeachLine(pointAsEvent);
             AddCreatedCircleEvents();
@@ -63,9 +75,9 @@ namespace MapGeneratorConsole.CubesFortune
 
         private void AddCreatedCircleEvents()
         {
-            foreach (VrnEvent circ in regionsT.GetCurrentCircleEvents())
+            foreach (CircleEvent circ in regionsT.GetCurrentCircleEvents())
             {
-                eventQ.AddNode(new CircleEvent(circ.creatingArc, circ.circleCenter, circ.circleLength));
+                circleQ.AddNode(circ);
             }
         }
     }

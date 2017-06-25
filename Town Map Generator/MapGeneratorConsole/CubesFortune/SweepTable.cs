@@ -37,9 +37,9 @@ namespace MapGeneratorConsole.CubesFortune
 
 
         public Arc BeachPoints;
-        private List<VrnEvent> createdCircleEvents;
-        private double _boundx0 = -50.0;
-        private double _boundy0 = -50.0;
+        private List<CircleEvent> createdCircleEvents;
+        private double _boundx0 = -150.0;
+        private double _boundy0 = -150.0;
 
 
         private double _boundx1 = 150.0;
@@ -49,13 +49,13 @@ namespace MapGeneratorConsole.CubesFortune
         public SweepTable()
         {
             VoronoiGraph = new List<VoronoiSegment>();
-            createdCircleEvents = new List<VrnEvent>();
+            createdCircleEvents = new List<CircleEvent>();
         }
 
         public SweepTable(double boundrysize)
         {
             VoronoiGraph = new List<VoronoiSegment>();
-            createdCircleEvents = new List<VrnEvent>();
+            createdCircleEvents = new List<CircleEvent>();
             _boundx1 = boundrysize * 1.5;
             _boundy1 = boundrysize * 1.5;
         }
@@ -77,7 +77,8 @@ namespace MapGeneratorConsole.CubesFortune
                         var nextpointcheckZ = FindIntersectedArc(newarcpoint, knownSite.nextpoint);
                         if (!(knownSite.nextpoint is null) && !nextpointcheckZ.flag)
                         {
-                            InsertPointAfterCurrent(knownSite.arcpoint);
+                            knownSite.nextpoint.previouspoint = new Arc(knownSite.arcpoint, knownSite, knownSite.nextpoint);
+                            knownSite.nextpoint = knownSite.nextpoint.previouspoint;
                         }
                         else
                         {
@@ -85,14 +86,19 @@ namespace MapGeneratorConsole.CubesFortune
                         }
                         knownSite.nextpoint.s1 = knownSite.s1;
 
-                        InsertPointAfterCurrent(newarcpoint);
+                        knownSite.nextpoint.previouspoint = new Arc(newarcpoint, knownSite, knownSite.nextpoint);
+                        knownSite.nextpoint = knownSite.nextpoint.previouspoint;
 
                         knownSite = knownSite.nextpoint;
                         
-                        var vifSeg = new VoronoiSegment(intersection.siteEvent.X, intersection.siteEvent.Y, 3);
-                        VoronoiGraph.Add(vifSeg);
+                        var vifSeg = new VoronoiSegment(intersection.siteEvent.X, intersection.siteEvent.Y, knownSite, knownSite.previouspoint, 3);
+                        knownSite.previouspoint.s1 = vifSeg;
                         knownSite.s0 = vifSeg;
-                        knownSite.nextpoint.s1 = vifSeg;
+                        VoronoiGraph.Add(vifSeg);
+                        vifSeg = new VoronoiSegment(intersection.siteEvent.X, intersection.siteEvent.Y,knownSite.nextpoint,knownSite, 7);
+                        knownSite.s1 = vifSeg;
+                        knownSite.nextpoint.s0 = vifSeg;
+                        VoronoiGraph.Add(vifSeg); //Yes this needs to be added twice
                         CheckForCircleEventsInTriple(newarcpoint.X);
                         return;
                     }
@@ -107,7 +113,7 @@ namespace MapGeneratorConsole.CubesFortune
                 var x = _boundx0;
                 var y = (knownSite.nextpoint.arcpoint.Y + knownSite.arcpoint.Y) / 2.0;
                 var segmentEvent = new SiteEvent(x, y);
-                var vSeg = new VoronoiSegment(segmentEvent.X, segmentEvent.Y, 1);
+                var vSeg = new VoronoiSegment(segmentEvent.X, segmentEvent.Y,knownSite.nextpoint,knownSite, 1);
                 VoronoiGraph.Add(vSeg);
                 knownSite.s1 = vSeg;
                 knownSite.nextpoint.s0 = vSeg;
@@ -125,7 +131,7 @@ namespace MapGeneratorConsole.CubesFortune
         {
             if(!(knowncircleSite.CreatingEventE is null) && knowncircleSite.CreatingEventE.circleLength != _boundx0)
             {
-                knowncircleSite.CreatingEventE.valid = false;
+                knowncircleSite.CreatingEventE.isNodeValid = false;
             }
             knowncircleSite.CreatingEventE = null;
 
@@ -137,7 +143,7 @@ namespace MapGeneratorConsole.CubesFortune
             var circleeventtest = CalculateCircleEventCheck(knowncircleSite.previouspoint.arcpoint, knowncircleSite.arcpoint, knowncircleSite.nextpoint.arcpoint);
             if (circleeventtest.isCircle && circleeventtest.x > _boundx0)
             {
-                knowncircleSite.CreatingEventE = new VrnEvent(circleeventtest.x, circleeventtest.o, knowncircleSite);
+                knowncircleSite.CreatingEventE = new CircleEvent(knowncircleSite, circleeventtest.o, circleeventtest.x);
                 createdCircleEvents.Add(knowncircleSite.CreatingEventE);
             }
         
@@ -174,29 +180,35 @@ namespace MapGeneratorConsole.CubesFortune
 
         public void ProcessCircleEvent(IVoronoiPoint p)
         {
-            var segment = new VoronoiSegment(p._Node.CreatingEventE.circleCenter.X, p._Node.CreatingEventE.circleCenter.Y, 2);
-            VoronoiGraph.Add(segment);
-            var assocatiedArcA = p._Node.CreatingEventE.creatingArc;
+            if(!p.isNodeValid)
+            {
+                return;
+            }
+            var assocatiedArcA = p.primaryArc.CreatingEventE.primaryArc;
+            var segment = new VoronoiSegment(p.primaryArc.CreatingEventE.Center.X, p.primaryArc.CreatingEventE.Center.Y, assocatiedArcA.nextpoint, assocatiedArcA.previouspoint ,2);
+            VoronoiGraph.Add(segment);            
             if (!(assocatiedArcA.previouspoint is null))
             {
                 assocatiedArcA.previouspoint.nextpoint = assocatiedArcA.nextpoint;
                 assocatiedArcA.previouspoint.s1 = segment;
-                CheckForCircleEvent(assocatiedArcA.previouspoint, p._Node.CreatingEventE.circleLength);
             }
             if (!(assocatiedArcA.nextpoint is null))
             {
                 assocatiedArcA.nextpoint.previouspoint = assocatiedArcA.previouspoint;
-                assocatiedArcA.previouspoint.s0 = segment;
-                CheckForCircleEvent(assocatiedArcA.nextpoint, p._Node.CreatingEventE.circleLength);
+                assocatiedArcA.nextpoint.s0 = segment;
             }
             if(!(assocatiedArcA.s0 is null))
             {
-                assocatiedArcA.s0.finish(p._Node.CreatingEventE.circleCenter.X, p._Node.CreatingEventE.circleCenter.Y,4);
+                assocatiedArcA.s0.finish(p.primaryArc.CreatingEventE.Center.X, p.primaryArc.CreatingEventE.Center.Y,4);
             }
             if (!(assocatiedArcA.s1 is null))
             {
-                assocatiedArcA.s1.finish(p._Node.CreatingEventE.circleCenter.X, p._Node.CreatingEventE.circleCenter.Y,5);
+                assocatiedArcA.s1.finish(p.primaryArc.CreatingEventE.Center.X, p.primaryArc.CreatingEventE.Center.Y,5);
             }
+
+
+            CheckForCircleEvent(assocatiedArcA.previouspoint, p.primaryArc.CreatingEventE.circleLength);
+            CheckForCircleEvent(assocatiedArcA.nextpoint, p.primaryArc.CreatingEventE.circleLength);
         }
 
         private void InsertPointAfterCurrent(SiteEvent arcfocus)
@@ -233,10 +245,20 @@ namespace MapGeneratorConsole.CubesFortune
             if ((intersectedKnownSite.previouspoint is null || priorpoint <= newPoint.Y) && (intersectedKnownSite.nextpoint is null || newPoint.Y <= nextpoint))
             {
                 var py = newPoint.Y;
-                var px = 1.0 * (Math.Pow(intersectedKnownSite.arcpoint.X, 2) + Math.Pow(intersectedKnownSite.arcpoint.Y - py, 2) - Math.Pow(intersectedKnownSite.arcpoint.X, 2)) / (2 * intersectedKnownSite.arcpoint.X - 2 * newPoint.X);
-                return new IntersectionFlag(true, new SiteEvent(py, px));
+                double px = CalculatePX(newPoint, intersectedKnownSite, py);
+                return new IntersectionFlag(true, new SiteEvent(px, py));
             }
             return nomatch;
+        }
+
+        private static double CalculatePX(SiteEvent newPoint, Arc intersectedKnownSite, double py)
+        {
+            var xsq = Math.Pow(intersectedKnownSite.arcpoint.X, 2);
+            var difysq = Math.Pow((intersectedKnownSite.arcpoint.Y - py), 2);
+            var npXSq = Math.Pow(newPoint.X, 2) ;
+            var difXdoub = ((2 * intersectedKnownSite.arcpoint.X) - (2 * newPoint.X));
+            var result = (xsq + difysq - npXSq) / difXdoub;
+            return result;
         }
 
         public SiteEvent ParabolaIntersection(SiteEvent p0, SiteEvent p1, double newpointX)
@@ -269,7 +291,7 @@ namespace MapGeneratorConsole.CubesFortune
             return res;
         }
 
-        public List<VrnEvent> GetCurrentCircleEvents()
+        public List<CircleEvent> GetCurrentCircleEvents()
         {
             var currentevents = createdCircleEvents.ToList();
             createdCircleEvents.Clear();
@@ -279,17 +301,20 @@ namespace MapGeneratorConsole.CubesFortune
         public VoronoiMap FinishEdges()
         {
             var infinitypoint = _boundx1 + (_boundx1 - _boundx0) + (_boundy1 - _boundy0);
-            var workingSite = knownSite;
+            var workingSite = BeachPoints;
             while (!(workingSite.nextpoint is null))
             {
                 if (!(workingSite.s1 is null))
                 {
                     var p = ParabolaIntersection(workingSite.arcpoint, workingSite.nextpoint.arcpoint, infinitypoint * 2);
-                    workingSite.s1.finish(p.X, p.Y, 6);
+                    workingSite.s1.finish(p.X, p.Y,6);
                 }
                 workingSite = workingSite.nextpoint;
             }
-
+            foreach (VoronoiSegment seg in VoronoiGraph)
+            {
+                System.Diagnostics.Debug.WriteLine("(({0},{1}),({2},{3}),", seg.start.X, seg.start.Y, seg.end.X, seg.end.Y);
+            }
             return new VoronoiMap(VoronoiGraph);
         }
     }

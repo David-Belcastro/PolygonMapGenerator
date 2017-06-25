@@ -13,7 +13,7 @@ namespace TerrainGenerator.Services
 {
     public class MapGenService
     {
-        public Dictionary<int,Center> Centers { get; set; }
+        public Dictionary<int, Center> Centers { get; set; }
         public Dictionary<int, List<Corner>> Corners { get; set; }
         public Dictionary<int, List<Edge>> Edges { get; set; }
 
@@ -39,19 +39,19 @@ namespace TerrainGenerator.Services
             MapX = mapX;
             MapY = mapY;
             MapZ = mapZ;
-            _mapService = new MapService(this,mapX,mapY,mapZ, new TownMapService(this, mapX, mapY, mapZ));
+            _mapService = new MapService(this, mapX, mapY, mapZ, new TownMapService(this, mapX, mapY, mapZ));
 
             points = new List<Point>();
             var rnd = new Random(seed);
 
             points.Clear();
-            for (int i = 0; i < mapX  ; i++)
+            for (int i = 0; i < mapX; i++)
             {
-                points.Add(new Point(Math.Abs(rnd.NextDouble() * EnvironmentService.MapX),
-                                      Math.Abs(rnd.NextDouble() * EnvironmentService.MapZ), 0));
+                points.Add(new Point(Math.Abs(rnd.NextDouble() * 10),
+                                      Math.Abs(rnd.NextDouble() * 10), 0));
             }
 
-            _mapService.LoadMap(points);
+        _mapService.LoadMap(points);
             _mapService.GenerateIsland();
             
         }

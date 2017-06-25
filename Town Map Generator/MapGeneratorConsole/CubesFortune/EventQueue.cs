@@ -16,19 +16,25 @@ namespace MapGeneratorConsole.CubesFortune
         }
 
         public IVoronoiPoint PeekAndRemoveSmallest() {
-            var point = NodeList[0];
+            var point = PeekSmallest();
             RemoveSmallest();
             return point;
         }
 
-        public void SortNodeList()
+        public IVoronoiPoint PeekSmallest()
+        {
+            var point = NodeList[0];
+            return point;
+        }
+
+        public virtual void SortNodeList()
         {
             NodeList.Sort((a, b) =>
             {
-                var result = a.Y.CompareTo(b.Y);
+                var result = a.X.CompareTo(b.X);
                 if (result == 0)
                 {
-                    result = a.X.CompareTo(b.X);
+                    result = a.Y.CompareTo(b.Y);
                 }
                 return result;
             });
@@ -38,5 +44,22 @@ namespace MapGeneratorConsole.CubesFortune
         {
             return NodeList.Count == 0;
         }
+    }
+
+    public class CircleQueue :EventQueue
+    {
+        public override void SortNodeList()
+        {
+            NodeList.Sort((a, b) =>
+            {
+                var result = a.circleLength.CompareTo(b.circleLength);
+                if (result == 0)
+                {
+                    result = a.X.CompareTo(b.X);
+                }
+                return result;
+            });
+        }
+
     }
 }

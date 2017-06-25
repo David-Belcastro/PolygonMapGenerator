@@ -62,6 +62,7 @@
     <Compile Include="CubesFortune\CubesVoronoiMapperTests.cs" />
     <Compile Include="CubesFortune\EventQueueTests.cs" />
     <Compile Include="CubesFortune\SweepTableTests.cs" />
+    <Compile Include="CubesFortune\VoronoiSegmentTests.cs" />
     <Compile Include="ImageGenerators\MapGenerators\Services\GeneratorServices\MapServiceTests.cs" />
     <Compile Include="PointGens\TriangleTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -67,6 +67,41 @@ namespace MapGeneratorConsole.CubesFortune.Tests
         }
 
         [TestMethod()]
+        public void AddToBeachLineTest_AddNewPoint_TwoDifferentPointRefs()
+        {
+            var intpoints = new intersectingpoints();
+            var sut = new SweepTable { BeachPoints = intpoints.arc3 };
+            sut.AddToBeachLine(intpoints.testsite);
+            Assert.IsFalse(ReferenceEquals(sut.BeachPoints.nextpoint.s1, sut.BeachPoints.s1));
+        }
+
+        [TestMethod()]
+        public void CheckCircleEventCheck_righthandcircle_returnsblankevent()
+        {
+            var pointa = new SiteEvent(10, 10);
+            var pointb = new SiteEvent(20, 15);
+            var pointc = new SiteEvent(15, 20);
+
+            var sut = new SweepTable();
+            var circlecheck = sut.CalculateCircleEventCheck(pointa, pointb, pointc);
+            Assert.IsFalse(circlecheck.isCircle);            
+        }
+
+        [TestMethod()]
+        public void CheckCircleEventCheck_sitesdifferent_returnscircleincenter()
+        {
+            var pointa = new SiteEvent(10, 10);
+            var pointb = new SiteEvent(20, 15);
+            var pointc = new SiteEvent(15, 20);
+
+            var sut = new SweepTable();
+            var circlecheck = sut.CalculateCircleEventCheck(pointc, pointb, pointa);
+            Assert.AreEqual(14.1666, circlecheck.o.X, 0.0001);
+            Assert.AreEqual(14.1666, circlecheck.o.Y, 0.0001);
+            Assert.AreEqual(20.05922, circlecheck.x, 0.0001);
+        }
+
+        [TestMethod()]
         public void FindIntersectedArcTest_EmptyBreachList_ReturnsNull()
         {
             var sut = new SweepTable();
@@ -132,7 +167,7 @@ namespace MapGeneratorConsole.CubesFortune.Tests
         [TestMethod()]
         public void FinishEdgesTest_nowaitingpoints_returnsemptygraph()
         {
-            var sut = new SweepTable { knownSite = new Arc() } ;
+            var sut = new SweepTable { BeachPoints = new Arc() } ;
             Assert.IsInstanceOfType(sut.FinishEdges(), typeof(VoronoiMap));
             Assert.AreEqual(0, sut.FinishEdges().graph.Count);
         }

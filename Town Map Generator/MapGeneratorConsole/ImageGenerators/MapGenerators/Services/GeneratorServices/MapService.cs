@@ -43,6 +43,8 @@ namespace TerrainGenerator.Services.GeneratorServices
         public void LoadMap(List<Point> points)
         {
             var voronoiMap = new CubesVoronoiMapper();
+            //Temp
+
             mapgraphy = voronoiMap.GimmesomeVeoroiois(points);
             //ImproveMapData(mapgraphy);
             
