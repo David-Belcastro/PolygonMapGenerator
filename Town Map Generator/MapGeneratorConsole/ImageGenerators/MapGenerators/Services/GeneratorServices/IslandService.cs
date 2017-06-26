@@ -4,8 +4,8 @@ using System.Linq;
 using TerrainGenerator.Helpers;
 using TerrainGenerator.Models;
 using SlimDX;
-using MapGeneratorConsole.Utilities;
-using MapGeneratorConsole.ImageGenerators.MapGenerators.Helpers;
+using CubesFortune.Utilities;
+using CubesFortune.ImageGenerators.MapGenerators.Helpers;
 
 namespace TerrainGenerator.Services.GeneratorServices
 {

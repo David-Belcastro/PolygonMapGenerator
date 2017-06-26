@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using TerrainGenerator.Services;
+using CubesFortune;
 
 namespace Town_Map_Generator
 {
@@ -14,24 +15,29 @@ namespace Town_Map_Generator
         private static bool _DrawRivers = true;
         private static bool _Subdivide = true;
         private static int _RandomSeed = 757575424;
+        private PointGenerator pointgen;
+        private CubesVoronoiMapper VoronoiGenerator;
+        private ImageDrawer ImagePainter;
 
-        public ImageGenerator(bool veg, bool rivers, bool subdivide, int seed, int mapsize)
+        public ImageGenerator(int seed)
         {
-            _AddVegetation = veg;
-            _DrawRivers = rivers;
-            _Subdivide = subdivide;
             _RandomSeed = seed;
-            EnvironmentService = new EnvironmentService(_DrawRivers, seed, mapsize);
+            pointgen = new PointGenerator(seed);
+            VoronoiGenerator = new CubesVoronoiMapper();
+            ImagePainter = new ImageDrawer();
         }
 
-        internal void createimage(int basesize, int mapsize)
+        internal void createimage(int points)
         {
+            var pointlist = pointgen.Givemepoints(points);
+            var voronoimap = VoronoiGenerator.GimmesomeVeoroiois(pointlist);
+            var polymap = new PolyMap(voronoimap);
             var b = new Bitmap(1000,1000);
             var g = Graphics.FromImage(b);
-            EnvironmentService.Draw(g, 1000, Math.Max(1000, Math.Min(1000, 10000)));
+            var finallimage = ImagePainter.DrawVoronoi(pointlist, voronoimap);
 
             string savestring = string.Format("E:\\Projects\\MapGenerator\\Images\\Image{0}.PNG", DateTime.Now.Ticks);
-            b.Save(@savestring, ImageFormat.Png);
+            finallimage.Save(@savestring, ImageFormat.Png);
 
         }
     }

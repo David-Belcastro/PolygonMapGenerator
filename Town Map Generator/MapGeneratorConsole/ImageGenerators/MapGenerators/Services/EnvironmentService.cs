@@ -3,6 +3,7 @@ using System.Linq;
 using TerrainGenerator.Models;
 using System.Drawing;
 using SlimDX;
+using CubesFortune;
 
 namespace TerrainGenerator.Services
 {
@@ -160,7 +161,7 @@ namespace TerrainGenerator.Services
             var triangulator = new ceometric.DelaunayTriangulator.DelaunayTriangulation2d();
             var points = new List<ceometric.DelaunayTriangulator.Point>();
             var cornerpoints = new List<ceometric.DelaunayTriangulator.Point>();
-            foreach (MapGeneratorConsole.CubesFortune.VoronoiSegment seg in MapGenService._mapService.mapgraphy.graph)
+            foreach (VoronoiSegment seg in MapGenService._mapService.mapgraphy.graph)
             {
                 points.Add(new ceometric.DelaunayTriangulator.Point(seg.start.SafeX, seg.start.SafeY, 0));
                 float imageratio = 100f;

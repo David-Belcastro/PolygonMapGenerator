@@ -90,21 +90,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BrnVoronoi\Handlers\EventHandler.cs" />
-    <Compile Include="BrnVoronoi\Handlers\NodeHandler.cs" />
-    <Compile Include="BrnVoronoi\Helpers\Methods.cs" />
-    <Compile Include="BrnVoronoi\Models\Constants.cs" />
-    <Compile Include="BrnVoronoi\Models\Events.cs" />
-    <Compile Include="BrnVoronoi\Models\Nodes.cs" />
-    <Compile Include="BrnVoronoi\Models\PriorityQueue.cs" />
-    <Compile Include="BrnVoronoi\Models\Vector.cs" />
-    <Compile Include="BrnVoronoi\Models\VoronoiEdge.cs" />
-    <Compile Include="BrnVoronoi\Models\VoronoiGraph.cs" />
-    <Compile Include="BrnVoronoi\VoronoiMapper.cs" />
     <Compile Include="CubesFortune\CubesVoronoiMapper.cs" />
     <Compile Include="CubesFortune\EventQueue.cs" />
     <Compile Include="CubesFortune\SweepTable.cs" />
     <Compile Include="CubesFortune\VoronoiEvents.cs" />
+    <Compile Include="ImageGenerators\Graph\Centers.cs" />
+    <Compile Include="ImageGenerators\Graph\Corners.cs" />
+    <Compile Include="ImageGenerators\ImageDrawer.cs" />
+    <Compile Include="ImageGenerators\PointGenerator.cs" />
+    <Compile Include="ImageGenerators\PolyMap.cs" />
     <Compile Include="PointGens\Delaunay.cs" />
     <Compile Include="PointGens\Edge.cs" />
     <Compile Include="ImageGenerators\ImageGenerator.cs" />

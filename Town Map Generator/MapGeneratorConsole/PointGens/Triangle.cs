@@ -76,9 +76,9 @@ namespace ceometric.DelaunayTriangulator
             return false;
         }
 
-        public void Draw(Graphics finalimage, int basesize, int mapsize, Color cornercolor)
+        public void Draw(Graphics finalimage,  Color cornercolor)
         {
-            float imageratio = mapsize / basesize;
+            float imageratio = 100f;
             var pen = new SolidBrush(Color.Red);
             var randomizer = new Random();
             var cornerpen = new SolidBrush(cornercolor);

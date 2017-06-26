@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SlimDX;
-using MapGeneratorConsole.Utilities;
+using CubesFortune.Utilities;
 using TerrainGenerator.Helpers;
 using TerrainGenerator.Services;
 using TerrainGenerator.Services.GeneratorServices;
 
-namespace MapGeneratorConsole.ImageGenerators.TownMapGen
+namespace CubesFortune.ImageGenerators.TownMapGen
 {
     class TownMapService : LandFormGenerator, ILandFormGenerator
     {

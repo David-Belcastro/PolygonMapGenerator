@@ -1,12 +1,12 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MapGeneratorConsole.CubesFortune;
+using CubesFortune.CubesFortune;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MapGeneratorConsole.CubesFortune.Tests
+namespace CubesFortune.CubesFortune.Tests
 {
     [TestClass()]
     public class VoronoiSegmentTests

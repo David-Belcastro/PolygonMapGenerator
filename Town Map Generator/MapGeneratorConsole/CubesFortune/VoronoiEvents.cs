@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MapGeneratorConsole.CubesFortune
+namespace CubesFortune
 {
     public interface IVoronoiPoint
     {
@@ -176,7 +176,7 @@ namespace MapGeneratorConsole.CubesFortune
             nextpoint = npoint;
         }
 
-        
+
     }
     public class VoronoiPoint
     {
@@ -186,16 +186,22 @@ namespace MapGeneratorConsole.CubesFortune
         public double SafeX;
         public double SafeY;
 
-    public VoronoiPoint(double x, double y)
+        public VoronoiPoint(double x, double y)
         {
             X = x;
             Y = y;
+            SetSafePoints();
         }
-    
-     public void SetSafePoints (double x, double y)
+
+        public void SetSafePoints()
         {
-            SafeX = x;
-            SafeY = y;
+            SafeX = X;
+            SafeY = Y;
+        }
+
+        public ceometric.DelaunayTriangulator.Point Point()
+        {
+            return new ceometric.DelaunayTriangulator.Point(SafeX, SafeY, 0);
         }
     }
 
@@ -212,14 +218,14 @@ namespace MapGeneratorConsole.CubesFortune
         public double b;
 
 
-    //known should be left, pprev right (i?)
-    public VoronoiSegment(double startX, double startY, Arc lefts0, Arc rights1, int cp)
+        //known should be left, pprev right (i?)
+        public VoronoiSegment(double startX, double startY, Arc lefts0, Arc rights1, int cp)
         {
-            start = new VoronoiPoint (startX, startY);
+            start = new VoronoiPoint(startX, startY);
             creationpoint = cp;
-            LeftNode = new VoronoiPoint (lefts0.arcpoint.X,lefts0.arcpoint.Y);
-            RightNode = new VoronoiPoint (rights1.arcpoint.X, rights1.arcpoint.Y);
-            System.Diagnostics.Debug.WriteLine ("Creating point at ({0},{1}) from code {2}", startX, startY, cp);
+            LeftNode = new VoronoiPoint(lefts0.arcpoint.X, lefts0.arcpoint.Y);
+            RightNode = new VoronoiPoint(rights1.arcpoint.X, rights1.arcpoint.Y);
+            System.Diagnostics.Debug.WriteLine("Creating point at ({0},{1}) from code {2}", startX, startY, cp);
         }
 
         public void CalculateSlopeAndIntercept()
@@ -235,7 +241,7 @@ namespace MapGeneratorConsole.CubesFortune
                 return;
             }
             creationpoint = cp;
-            end = new VoronoiPoint (startX, startY );
+            end = new VoronoiPoint(startX, startY);
             completed = true;
             CalculateSlopeAndIntercept();
             SetSafeXAndY();
@@ -245,10 +251,10 @@ namespace MapGeneratorConsole.CubesFortune
         public void SetSafeXAndY()
         {
             var largestpointstart = Math.Max(Math.Abs((start.X)), Math.Abs(start.Y));
-            var largestpointend = Math.Max(Math.Abs(end.X),Math.Abs(end.Y));
+            var largestpointend = Math.Max(Math.Abs(end.X), Math.Abs(end.Y));
             if (largestpointstart > 10000)
             {
-                if(largestpointstart ==Math.Abs(start.X))
+                if (largestpointstart == Math.Abs(start.X))
                 {
                     start.SafeX = getlimit(start.X);
                     start.SafeY = GetYCoord(start.SafeX);

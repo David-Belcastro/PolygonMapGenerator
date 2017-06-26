@@ -5,7 +5,7 @@ using System.Threading;
 /// <summary>
 /// An ASCII progress bar
 /// </summary>
-namespace MapGeneratorConsole.Utilities
+namespace CubesFortune.Utilities
 {
     public class ProgressBar : IDisposable, IProgress<double>
     {

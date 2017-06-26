@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Rhino.Mocks;
 using Rhino.Mocks.Exceptions;
 using ceometric.DelaunayTriangulator;
-using BrnVoronoi.Models;
 
 namespace TerrainGenerator.Services.GeneratorServices.Tests
 {

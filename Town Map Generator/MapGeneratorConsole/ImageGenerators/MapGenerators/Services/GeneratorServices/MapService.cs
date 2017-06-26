@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using BrnVoronoi;
 using ceometric.DelaunayTriangulator;
-using MapGeneratorConsole.CubesFortune;
+using CubesFortune;
 using TerrainGenerator.Models;
 using SlimDX;
 using System.Linq;

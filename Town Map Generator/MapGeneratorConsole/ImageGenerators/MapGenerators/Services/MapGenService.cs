@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using BrnVoronoi.Models;
 using ceometric.DelaunayTriangulator;
 using WpfApplication1.Models;
 using TerrainGenerator.Models;
 using TerrainGenerator.Services.GeneratorServices;
-using MapGeneratorConsole.ImageGenerators.TownMapGen;
+using CubesFortune.ImageGenerators.TownMapGen;
 
 namespace TerrainGenerator.Services
 {

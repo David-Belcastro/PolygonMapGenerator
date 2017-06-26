@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace MapGeneratorConsole.CubesFortune
+namespace CubesFortune
 {
     public class EventQueue {
 

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MapGeneratorConsole.ImageGenerators.MapGenerators.Helpers
+namespace CubesFortune.ImageGenerators.MapGenerators.Helpers
 {
     class PerlinNoise
     {

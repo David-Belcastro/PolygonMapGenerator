@@ -64,6 +64,8 @@
     <Compile Include="CubesFortune\SweepTableTests.cs" />
     <Compile Include="CubesFortune\VoronoiSegmentTests.cs" />
     <Compile Include="ImageGenerators\MapGenerators\Services\GeneratorServices\MapServiceTests.cs" />
+    <Compile Include="ImageGenerators\PointGeneratorTests.cs" />
+    <Compile Include="ImageGenerators\PolyMapTests.cs" />
     <Compile Include="PointGens\TriangleTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
