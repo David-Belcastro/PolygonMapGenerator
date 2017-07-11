@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
-using TerrainGenerator.Services;
 using CubesFortune;
 
 namespace Town_Map_Generator
@@ -10,10 +9,6 @@ namespace Town_Map_Generator
 
     public class ImageGenerator : IImageGenerator
     {
-        public EnvironmentService EnvironmentService { get; set; }
-        private static bool _AddVegetation = false;
-        private static bool _DrawRivers = true;
-        private static bool _Subdivide = true;
         private static int _RandomSeed = 757575424;
         private PointGenerator pointgen;
         private CubesVoronoiMapper VoronoiGenerator;
@@ -31,7 +26,7 @@ namespace Town_Map_Generator
         {
             var pointlist = pointgen.Givemepoints(points);
             var voronoimap = VoronoiGenerator.GimmesomeVeoroiois(pointlist);
-            var polymap = new PolyMap(voronoimap);
+            var polymap = new PolyMap(voronoimap, pointlist);
             var b = new Bitmap(1000,1000);
             var g = Graphics.FromImage(b);
             var finallimage = ImagePainter.DrawVoronoi(pointlist, voronoimap);

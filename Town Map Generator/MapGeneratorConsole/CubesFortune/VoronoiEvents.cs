@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MapGeneratorConsole.ImageGenerators.Graph;
 
 namespace CubesFortune
 {
@@ -294,5 +291,15 @@ namespace CubesFortune
         }
 
         public double GetXCoord(double Y) { return (Y - b) / m; }
+
+        public Line VoronoiLine()
+        {
+            return new Line(LeftNode, RightNode);
+        }
+
+        public Line DelaunayLine()
+        {
+            return new Line(start, end);
+        }
     }
 }

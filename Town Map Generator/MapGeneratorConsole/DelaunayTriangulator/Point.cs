@@ -1,4 +1,5 @@
 using System;
+using CubesFortune;
 
 namespace ceometric.DelaunayTriangulator
 {
@@ -23,6 +24,13 @@ namespace ceometric.DelaunayTriangulator
             this.X = x;
             this.Y = y;
             this.Z = z;
+        }
+
+        public Point(VoronoiPoint vrnPoint)
+        {
+            X = vrnPoint.SafeX;
+            Y = vrnPoint.SafeY;
+
         }
 
         #endregion

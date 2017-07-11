@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using CubesFortune;
 using ceometric.DelaunayTriangulator;
+using MapGeneratorConsole.ImageGenerators.Graph;
 
 namespace Town_Map_Generator
 {
@@ -10,11 +11,11 @@ namespace Town_Map_Generator
         private VoronoiMap voronoimap;
         public List<Centers> polys;
         public List<Corners> polycorns;
-        private List<ceometric.DelaunayTriangulator.Point> basepoints;
-        private Dictionary<Point, Centers> _centerLookup;
+        private List<VoronoiPoint> basepoints;
+        private Dictionary<VoronoiPoint, Centers> _centerLookup;
         private Dictionary<int, List<Corners>> _cornerLookup;
 
-        public PolyMap(VoronoiMap voronoimap, List<ceometric.DelaunayTriangulator.Point> basepoints)
+        public PolyMap(VoronoiMap voronoimap, List<VoronoiPoint> basepoints)
         {
             this.voronoimap = voronoimap;
             this.basepoints = basepoints;
@@ -23,15 +24,31 @@ namespace Town_Map_Generator
 
         public void MakeCenters()
         {
-            _centerLookup = new Dictionary<Point, Centers>();
+            _centerLookup = new Dictionary<VoronoiPoint, Centers>();
             _cornerLookup = new Dictionary<int, List<Corners>>();
             polys = new List<Centers>();
             polycorns = new List<Corners>();
-            foreach (Point pt in basepoints)
+            foreach (VoronoiPoint pt in basepoints)
             {
-                var poly = new Centers(polys.Count, new VoronoiPoint(pt.X, pt.Y);
+                var poly = new Centers(polys.Count, new VoronoiPoint(pt.X, pt.Y));
                 polys.Add(poly);
                 _centerLookup[pt] = poly;
+            }
+            var graphindex = 0;
+            foreach (VoronoiSegment vrnSeg in voronoimap.graph)
+            {
+                var delaunayEdge = vrnSeg.DelaunayLine();
+                var voronoiEdge = vrnSeg.VoronoiLine();
+
+                var edge = new DualGraphVertex(
+                    graphindex,
+                    _centerLookup[delaunayEdge.p0],
+                    _centerLookup[delaunayEdge.p1],
+                    MakeCorner(voronoiEdge.p0),
+                    MakeCorner(voronoiEdge.p1),
+                    voronoiEdge.MidPoint()
+                );
+                graphindex++;
             }
 
         }

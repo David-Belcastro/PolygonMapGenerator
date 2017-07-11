@@ -12,7 +12,7 @@ namespace Town_Map_Generator
         {
         }
 
-        public Bitmap DrawVoronoi(List<ceometric.DelaunayTriangulator.Point> pointlist, VoronoiMap voronoimap)
+        public Bitmap DrawVoronoi(List<VoronoiPoint> pointlist, VoronoiMap voronoimap)
         {
             var b = new Bitmap(1000, 1000);
             var g = Graphics.FromImage(b);
@@ -35,7 +35,7 @@ namespace Town_Map_Generator
                 }
 
             }
-            foreach (ceometric.DelaunayTriangulator.Point pt in pointlist)
+            foreach (VoronoiPoint pt in pointlist)
             {
                 float imageratio = 100f;
                 var pen = new SolidBrush(Color.Blue);

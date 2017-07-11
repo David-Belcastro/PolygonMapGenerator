@@ -311,10 +311,6 @@ namespace CubesFortune
                 }
                 workingSite = workingSite.nextpoint;
             }
-            foreach (VoronoiSegment seg in VoronoiGraph)
-            {
-                System.Diagnostics.Debug.WriteLine("(({0},{1}),({2},{3}),", seg.start.X, seg.start.Y, seg.end.X, seg.end.Y);
-            }
             return new VoronoiMap(VoronoiGraph);
         }
     }

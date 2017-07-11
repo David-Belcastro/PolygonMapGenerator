@@ -1,8 +1,5 @@
 using System;
 using System.Drawing;
-using System.Collections.Generic;
-using WpfApplication1.Models;
-using SlimDX;
 namespace ceometric.DelaunayTriangulator
 {
     /// <summary>A class defining a triangle and some methods for the Delaunay algorithm.</summary>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using ceometric.DelaunayTriangulator;
+using CubesFortune;
 
 namespace Town_Map_Generator
 {
@@ -15,12 +16,12 @@ namespace Town_Map_Generator
             randomizer = new Random(seed);
         }
 
-        public List<Point> Givemepoints(int points)
+        public List<VoronoiPoint> Givemepoints(int points)
         {
-            var finallist = new List<Point>();
+            var finallist = new List<VoronoiPoint>();
             for (int i = 0; i < points; i++)
             {
-                finallist.Add(new Point(Math.Abs(randomizer.NextDouble() * 10), Math.Abs(randomizer.NextDouble() * 10), 0));
+                finallist.Add(new VoronoiPoint(Math.Abs(randomizer.NextDouble() * 10), Math.Abs(randomizer.NextDouble() * 10)));
             }
             return finallist;
         }

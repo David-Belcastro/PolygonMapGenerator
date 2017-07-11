@@ -29,10 +29,10 @@ namespace CubesFortune
             regionsT = new SweepTable();
         }
 
-        public VoronoiMap GimmesomeVeoroiois(List<Point> sites)
+        public VoronoiMap GimmesomeVeoroiois(List<VoronoiPoint> sites)
         {
 
-            foreach (Point pt in sites)
+            foreach (VoronoiPoint pt in sites)
             {
                 var pointasevent = new SiteEvent(pt.X, pt.Y);
                 eventQ.AddNode(pointasevent);

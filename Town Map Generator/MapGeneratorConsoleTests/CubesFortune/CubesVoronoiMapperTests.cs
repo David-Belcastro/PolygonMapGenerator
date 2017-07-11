@@ -16,7 +16,7 @@ namespace CubesFortune.CubesFortune.Tests
         public void GimmesomeVeoroioisTest_No_input_ReturnsVeronoiMap()
         {
             var mockedMapper = new CubesVoronoiMapper() { };
-            Assert.IsInstanceOfType(mockedMapper.GimmesomeVeoroiois(new List<Point> { new Point(1, 1,0), new Point(2, 2,0) }), typeof(VoronoiMap));
+            Assert.IsInstanceOfType(mockedMapper.GimmesomeVeoroiois(new List<VoronoiPoint> { new VoronoiPoint(1, 1), new VoronoiPoint(2, 2) }), typeof(VoronoiMap));
 
         }
 
@@ -25,7 +25,7 @@ namespace CubesFortune.CubesFortune.Tests
         public void GimmesomeVeoroioisTest_4VerticalPointsInALine_ReturnsLineAtMid()
         {
             var mockedMapper = new CubesVoronoiMapper() { };
-            var points = new List<Point> { new Point(100, 100, 0), new Point(100, 200, 0), new Point(100, 300, 0), new Point(100, 400, 0) };
+            var points = new List<VoronoiPoint> { new VoronoiPoint(100, 100), new VoronoiPoint(100, 200), new VoronoiPoint(100, 300), new VoronoiPoint(100, 400) };
             var finalpoints = mockedMapper.GimmesomeVeoroiois(points);
             Assert.AreEqual(3,finalpoints.graph.Count);
             
@@ -41,7 +41,7 @@ namespace CubesFortune.CubesFortune.Tests
         public void GimmesomeVeoroioisTest_4SquarePoints_ReturnsDividedatQuadrents()
         {
             var mockedMapper = new CubesVoronoiMapper() { };
-            var points = new List<Point> { new Point(2.5, 2.5, 0), new Point(7.5, 2.5, 0), new Point(7.5, 7.5, 0), new Point(2.5, 7.5, 0) };
+            var points = new List<VoronoiPoint> { new VoronoiPoint(2.5, 2.5), new VoronoiPoint(7.5, 2.5), new VoronoiPoint(7.5, 7.5), new VoronoiPoint(2.5, 7.5) };
             var finalpoints = mockedMapper.GimmesomeVeoroiois(points);
             foreach (VoronoiSegment seg in finalpoints.graph)
             Assert.AreEqual(7, finalpoints.graph.Count);
@@ -54,23 +54,23 @@ namespace CubesFortune.CubesFortune.Tests
         public void GimmesomeVoronois_ComplexPoints_ReturnscorrectGrapg()
         {
             var mockedMapper = new CubesVoronoiMapper();
-            var points = new List<Point>
+            var points = new List<VoronoiPoint>
             {
-                new Point(2.78,.48,0),
-                new Point(5.1, 0.62, 0),
-                new Point(6.96, 0.39, 0),
-                new Point(7.87, 0.32, 0),
-                new Point(8.66, 5.02, 0),
-                new Point(8.8, 5.46, 0),
-                new Point(8.69, 6.89, 0),
-                new Point(9.12, 8.5, 0),
-                new Point(8.05, 6.79, 0),
-                new Point(5.92, 5.99, 0),
-                new Point(5.19, 6.3, 0),
-                new Point(3.3, 8.44, 0),
-                new Point(3.75, 6.25, 0),
-                new Point(1.45, 6.19, 0),
-                new Point(1.92, 4.74, 0)
+                new VoronoiPoint(2.78,.48),
+                new VoronoiPoint(5.1, 0.62),
+                new VoronoiPoint(6.96, 0.39),
+                new VoronoiPoint(7.87, 0.32),
+                new VoronoiPoint(8.66, 5.02),
+                new VoronoiPoint(8.8, 5.46),
+                new VoronoiPoint(8.69, 6.89),
+                new VoronoiPoint(9.12, 8.5),
+                new VoronoiPoint(8.05, 6.79),
+                new VoronoiPoint(5.92, 5.99),
+                new VoronoiPoint(5.19, 6.3),
+                new VoronoiPoint(3.3, 8.44),
+                new VoronoiPoint(3.75, 6.25),
+                new VoronoiPoint(1.45, 6.19),
+                new VoronoiPoint(1.92, 4.74)
 
             };
             var expsXlist = new List<double> { -0.551702127659575, -0.551702127659575, -8.20093023255814, -8.20093023255814, -22.7649337923729, 1.00675675675676, 1.00675675675676, 2.59921739130435, 2.59921739130435, 2.61185834919125, 2.57574052132701, 3.93577586206897, 3.93577586206897, 4.46913194444444, 4.46913194444444, 4.42641588740909, 5.48917808219178, 5.48917808219178, 3.79804910232316, 6.01577956989247, 6.01577956989247, 4.55618243942845, 4.51601932045303, 4.516333414813, 7.41230769230769, 7.41230769230769, 6.83476525821596, 6.83476525821596, 6.36267419432613, 7.11830291970803, 7.11830291970803, 8.3621875, 8.3621875, 7.30329219604988, 8.03857142857144, 8.03857142857144, 7.53172026346378, 7.21859813084113, 7.21859813084113, 6.18509153480451, 6.20314016990291, 6.36018316170112, 8.47712589073634, 8.20728985213693, 6.47259947541715, 7.60165374050735, 4.62726070528967, 13.2877777777778, 26.3730219072164, 3.87835548172758 };

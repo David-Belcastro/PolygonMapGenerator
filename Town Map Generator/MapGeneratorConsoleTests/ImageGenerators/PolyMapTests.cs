@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using ceometric.DelaunayTriangulator;
 using System.Threading.Tasks;
+using CubesFortune;
 
 namespace Town_Map_Generator.Tests
 {
@@ -15,11 +16,10 @@ namespace Town_Map_Generator.Tests
         [TestMethod()]
         public void MakeCentersTest()
         {
-            var points = new List<Point> { new Point(2.5, 2.5, 0), new Point(7.5, 2.5, 0), new Point(7.5, 7.5, 0), new Point(2.5, 7.5, 0), new Point(5,5,0) };
+            var points = new List<VoronoiPoint> { new VoronoiPoint(2.5, 2.5), new VoronoiPoint(7.5, 2.5), new VoronoiPoint(7.5, 7.5), new VoronoiPoint(2.5, 7.5), new VoronoiPoint(5,5) };
             var vmap = new CubesFortune.CubesVoronoiMapper().GimmesomeVeoroiois(points);
-            var sut = new PolyMap(vmap);
+            var sut = new PolyMap(vmap, points);
             Assert.AreEqual(5, sut.polys.Count);
-            Assert.AreEqual(4, sut.polys.Find(x => x.center.X == 5 && x.center.Y == 5).borders.Count);
         }
     }
 }
