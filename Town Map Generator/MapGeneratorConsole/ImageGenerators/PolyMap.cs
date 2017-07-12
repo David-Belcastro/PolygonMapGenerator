@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using CubesFortune;
 using ceometric.DelaunayTriangulator;
 using MapGeneratorConsole.ImageGenerators.Graph;
+using System.Linq;
 
 namespace Town_Map_Generator
 {
@@ -12,70 +13,108 @@ namespace Town_Map_Generator
         public List<Centers> polys;
         public List<Corners> polycorns;
         private List<VoronoiPoint> basepoints;
-        private Dictionary<VoronoiPoint, Centers> _centerLookup;
+        private Dictionary<int,Centers> _centerLookup;
         private Dictionary<int, List<Corners>> _cornerLookup;
+        public List<DualGraphVertex> MapGraph;
 
         public PolyMap(VoronoiMap voronoimap, List<VoronoiPoint> basepoints)
         {
             this.voronoimap = voronoimap;
             this.basepoints = basepoints;
-            MakeCenters();
+            GenerateMainGraph();
         }
 
-        public void MakeCenters()
+        public void GenerateMainGraph()
         {
-            _centerLookup = new Dictionary<VoronoiPoint, Centers>();
+            _centerLookup = new Dictionary<int, Centers>();
             _cornerLookup = new Dictionary<int, List<Corners>>();
-            polys = new List<Centers>();
-            polycorns = new List<Corners>();
-            foreach (VoronoiPoint pt in basepoints)
-            {
-                var poly = new Centers(polys.Count, new VoronoiPoint(pt.X, pt.Y));
-                polys.Add(poly);
-                _centerLookup[pt] = poly;
-            }
-            var graphindex = 0;
-            foreach (VoronoiSegment vrnSeg in voronoimap.graph)
-            {
-                var delaunayEdge = vrnSeg.DelaunayLine();
-                var voronoiEdge = vrnSeg.VoronoiLine();
 
-                var edge = new DualGraphVertex(
-                    graphindex,
-                    _centerLookup[delaunayEdge.p0],
-                    _centerLookup[delaunayEdge.p1],
-                    MakeCorner(voronoiEdge.p0),
-                    MakeCorner(voronoiEdge.p1),
-                    voronoiEdge.MidPoint()
-                );
-                graphindex++;
-            }
+            MapGraph = new List<DualGraphVertex>();
+            foreach (VoronoiSegment vrnseg in voronoimap.graph)
+            {
+                var delaunayline = vrnseg.DelaunayLine();
+                var voronoiline = vrnseg.VoronoiLine();
+                var corner1 = MakeCorner(voronoiline.startleft);
+                var corner2 = MakeCorner(voronoiline.endright);
+                var CenterLeft = MakeCenter(delaunayline.startleft);
+                var CenterRight = MakeCenter(delaunayline.endright);
 
+                corner1.AddToAdjacents(corner2);
+                corner2.AddToAdjacents(corner1);
+
+                CenterRight.AddToCorners(corner1);
+                CenterRight.AddToCorners(corner2);
+
+                CenterLeft.AddToCorners(corner1);
+                CenterRight.AddToCorners(corner2);
+
+                var GraphVertex = new DualGraphVertex(0, CenterLeft, CenterRight, corner1, corner2, voronoiline.MidPoint());
+
+                MapGraph.Add(GraphVertex);
+
+                CenterLeft.borders.Add(GraphVertex);
+                CenterRight.borders.Add(GraphVertex);
+                CenterLeft.AddToNeighbors(CenterRight);
+                CenterRight.AddToNeighbors(CenterLeft);
+
+                corner1.protrudes.Add(GraphVertex);
+                corner2.protrudes.Add(GraphVertex);
+                corner1.AddToTouches(CenterLeft);
+                corner1.AddToTouches(CenterRight);
+                corner2.AddToTouches(CenterLeft);
+                corner2.AddToTouches(CenterRight);
+            }
         }
 
-        public Corners MakeCorner(VoronoiPoint point)
+        public Corners MakeCorner(VoronoiPoint vrnPnt)
         {
-            for (var i = (int)(point.SafeX)-1; i <= (int)(point.SafeX)+1; i++)
+            int hash = vrnPnt.GetHashCode();
+            if (_cornerLookup.ContainsKey(hash))
             {
-                foreach(Corners crn in _cornerLookup[i])
+                var possibleCorner = _cornerLookup[hash].FirstOrDefault(crn => crn.location.SafeX == vrnPnt.SafeX && crn.location.SafeY == vrnPnt.SafeY);
+
+                if (possibleCorner != null)
                 {
-                    var dx = point.SafeX - crn.location.SafeX;
-                    var dy = point.SafeY - crn.location.SafeY;
-                    if (Math.Pow(dx,2)+Math.Pow(dx,2) < Math.Pow(1, -6))
+                    if (possibleCorner.location.SafeX == vrnPnt.SafeX && possibleCorner.location.SafeY == vrnPnt.SafeY)
                     {
-                        return crn;
+                        return possibleCorner;
+                    }
+                    else
+                    {
+                        return null;
                     }
                 }
+                else
+                {
+                    var newCorner = new Corners(_cornerLookup[hash].Count,vrnPnt);
+                    _cornerLookup[hash].Add(newCorner);
+                    return newCorner;
+                }
             }
-            var bucket = (int)point.SafeX;
-            if (!_cornerLookup.ContainsKey(bucket))
+            else
             {
-                _cornerLookup[bucket] = new List<Corners>();
+                var cornerlist = new List<Corners>();
+                var newCorner = new Corners(0, vrnPnt);
+                cornerlist.Add(newCorner);
+                _cornerLookup.Add(hash , cornerlist);
+                return newCorner;
             }
-            var newcrn = new Corners(polycorns.Count, point);
-            polycorns.Add(newcrn);
-            _cornerLookup[bucket].Add(newcrn);
-            return newcrn;
         }
+        public Centers MakeCenter(VoronoiPoint dlnyPnt)
+        {
+            var hash = dlnyPnt.GetHashCode();
+            if (_centerLookup.ContainsKey(hash))
+            {
+                return _centerLookup[hash];
+            }
+            else
+            {
+                var newCenter = new Centers(_centerLookup.Count, dlnyPnt);
+                _centerLookup[hash] = newCenter;
+                return newCenter;
+            }
+        }
+
     }
+
 }

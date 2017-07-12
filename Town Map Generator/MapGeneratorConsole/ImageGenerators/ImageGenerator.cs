@@ -17,20 +17,20 @@ namespace Town_Map_Generator
         public ImageGenerator(int seed)
         {
             _RandomSeed = seed;
-            pointgen = new PointGenerator(seed);
-            VoronoiGenerator = new CubesVoronoiMapper();
             ImagePainter = new ImageDrawer();
         }
 
         internal void createimage(int points)
         {
+            pointgen = new PointGenerator(_RandomSeed);
+            VoronoiGenerator = new CubesVoronoiMapper();
             var pointlist = pointgen.Givemepoints(points);
             var voronoimap = VoronoiGenerator.GimmesomeVeoroiois(pointlist);
             var polymap = new PolyMap(voronoimap, pointlist);
             var b = new Bitmap(1000,1000);
-            var g = Graphics.FromImage(b);
+            var g = Graphics.FromImage(b);            
+            ImagePainter.DrawMapGraph(pointlist, polymap.MapGraph);
             var finallimage = ImagePainter.DrawVoronoi(pointlist, voronoimap);
-
             string savestring = string.Format("E:\\Projects\\MapGenerator\\Images\\Image{0}.PNG", DateTime.Now.Ticks);
             finallimage.Save(@savestring, ImageFormat.Png);
 

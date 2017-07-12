@@ -294,12 +294,12 @@ namespace CubesFortune
 
         public Line VoronoiLine()
         {
-            return new Line(LeftNode, RightNode);
+            return new Line(start, end);
         }
 
         public Line DelaunayLine()
         {
-            return new Line(start, end);
+            return new Line(LeftNode, RightNode);
         }
     }
 }

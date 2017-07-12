@@ -9,20 +9,20 @@ namespace MapGeneratorConsole.ImageGenerators.Graph
 {
     public class Line
     {
-        public VoronoiPoint p0;
-        public VoronoiPoint p1;
+        public VoronoiPoint startleft;
+        public VoronoiPoint endright;
 
         public Line(VoronoiPoint leftpoint, VoronoiPoint rightpoint)
         {
-            this.p0 = leftpoint;
-            this.p1 = rightpoint;
+            startleft = leftpoint;
+            endright = rightpoint;
         }
 
         public VoronoiPoint MidPoint()
         {
-            var x = (p0.X + p1.X) / 2;
+            var x = (startleft.X + endright.X) / 2;
 
-            var y = (p0.Y + p1.Y) / 2;
+            var y = (startleft.Y + endright.Y) / 2;
 
             return new VoronoiPoint(x, y);
         }

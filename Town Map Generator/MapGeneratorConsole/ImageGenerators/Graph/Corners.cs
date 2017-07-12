@@ -6,11 +6,11 @@ namespace MapGeneratorConsole.ImageGenerators.Graph
     public class Corners
     {
         public double index;
-            public VoronoiPoint location;
+        public VoronoiPoint location;
         public bool border;
-            public List<Centers> touches;
-            public List<DualGraphVertex> protrudes;
-            public List<Corners> adjacents;
+        public List<Centers> touches;
+        public List<DualGraphVertex> protrudes;
+        public List<Corners> adjacents;
 
         public Corners(int ind, VoronoiPoint pointloc)
         {

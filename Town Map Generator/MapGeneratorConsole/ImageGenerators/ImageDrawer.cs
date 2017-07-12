@@ -3,18 +3,25 @@ using System.Drawing.Imaging;
 using System.Collections.Generic;
 using ceometric.DelaunayTriangulator;
 using CubesFortune;
+using MapGeneratorConsole.ImageGenerators.Graph;
+using System;
 
 namespace Town_Map_Generator
 {
     internal class ImageDrawer
     {
+
+        Random randomizer;
+        Bitmap b;
         public ImageDrawer()
         {
+            randomizer = new Random();
+            b = new Bitmap(1000, 1000);
         }
 
         public Bitmap DrawVoronoi(List<VoronoiPoint> pointlist, VoronoiMap voronoimap)
         {
-            var b = new Bitmap(1000, 1000);
+            //var b = new Bitmap(1000, 1000);
             var g = Graphics.FromImage(b);
             var lrnodes = new List<ceometric.DelaunayTriangulator.Point>();
             foreach (VoronoiSegment seg in voronoimap.graph)
@@ -47,6 +54,44 @@ namespace Town_Map_Generator
             foreach (ceometric.DelaunayTriangulator.Triangle tri in dlpoints)
             {
                 tri.Draw(g, Color.Red);
+            }
+            return b;
+        }
+
+        internal Bitmap DrawMapGraph(List<VoronoiPoint> pointlist, List<DualGraphVertex> mapGraph)
+        {
+            b = new Bitmap(1000, 1000);
+            var g = Graphics.FromImage(b);
+            var centerlist = new List<Centers>();
+            float imageratio = 100f;
+            var blackpen = new Pen(Color.Black,1);
+            var blackbrusy = new SolidBrush(Color.Black);
+            foreach (DualGraphVertex poly in mapGraph)
+            {
+                
+                if (poly.d0 != null)
+                {
+                    centerlist.Add(poly.d0);
+                }
+                if (poly.d1 != null)
+                {
+                    centerlist.Add(poly.d1);
+                }
+            }
+            foreach ( Centers cnt in centerlist)
+            {
+                var pen = new SolidBrush(Color.FromArgb(randomizer.Next(0, 255), randomizer.Next(0, 255), randomizer.Next(0, 255)));
+                var polypoints = new List<PointF>();
+                foreach (Corners crn in cnt.corners)
+                {
+                    polypoints.Add(new PointF((float)crn.location.SafeX * imageratio, (float)crn.location.SafeY * imageratio));
+                }
+                polypoints.Add(new PointF((float)cnt.center.SafeX * imageratio, (float)cnt.center.SafeY * imageratio));
+                if (polypoints.Count > 1)
+                {
+                    g.DrawPolygon(blackpen, polypoints.ToArray());
+                    g.FillPolygon(pen, polypoints.ToArray());
+                }
             }
             return b;
         }
