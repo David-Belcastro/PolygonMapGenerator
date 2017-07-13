@@ -19,9 +19,13 @@ namespace Town_Map_Generator
         public List<VoronoiPoint> Givemepoints(int points)
         {
             var finallist = new List<VoronoiPoint>();
-            for (int i = 0; i < points; i++)
+            for (int i = 0; i <= points; i++)
             {
-                finallist.Add(new VoronoiPoint(Math.Abs(randomizer.NextDouble() * 10), Math.Abs(randomizer.NextDouble() * 10)));
+                //finallist.Add(new VoronoiPoint(Math.Abs(randomizer.NextDouble() * 10), Math.Abs(randomizer.NextDouble() * 10)));
+                for (int o = 0; o <= points; o++)
+                {
+                    finallist.Add(new VoronoiPoint((double)i / 10, (double)o / 10));
+                }
             }
             return finallist;
         }

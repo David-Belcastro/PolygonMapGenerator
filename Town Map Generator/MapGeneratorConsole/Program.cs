@@ -11,7 +11,7 @@ namespace CubesFortune
     {
         static void Main(string[] args)
         {
-            int? mapsize = 1000
+            int? mapsize = 100
                 ;
             //Console.WriteLine("How big you want it boss?");
            // while (mapsize == null){
@@ -23,10 +23,9 @@ namespace CubesFortune
             //Console.WriteLine(mapsize);
             var generator = new ImageGenerator(new Random().Next());
 
-            for (int i = 1; i < 10; i++)
-            {
+         
                 generator.createimage(mapsize ?? 3600);
-            }
+          
             //Console.WriteLine("All Done");
             //Console.ReadLine();
         }

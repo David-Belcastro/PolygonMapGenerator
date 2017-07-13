@@ -29,8 +29,8 @@ namespace Town_Map_Generator
             var polymap = new PolyMap(voronoimap, pointlist);
             var b = new Bitmap(1000,1000);
             var g = Graphics.FromImage(b);            
-            ImagePainter.DrawMapGraph(pointlist, polymap.MapGraph);
-            var finallimage = ImagePainter.DrawVoronoi(pointlist, voronoimap);
+            var finallimage = ImagePainter.DrawMapGraph(pointlist, polymap.MapGraph);
+         //   var finallimage = ImagePainter.DrawVoronoi(pointlist, voronoimap);
             string savestring = string.Format("E:\\Projects\\MapGenerator\\Images\\Image{0}.PNG", DateTime.Now.Ticks);
             finallimage.Save(@savestring, ImageFormat.Png);
 

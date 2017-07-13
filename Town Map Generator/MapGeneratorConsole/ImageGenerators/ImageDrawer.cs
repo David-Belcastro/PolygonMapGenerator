@@ -79,18 +79,20 @@ namespace Town_Map_Generator
                 }
             }
             foreach ( Centers cnt in centerlist)
-            {
-                var pen = new SolidBrush(Color.FromArgb(randomizer.Next(0, 255), randomizer.Next(0, 255), randomizer.Next(0, 255)));
-                var polypoints = new List<PointF>();
-                foreach (Corners crn in cnt.corners)
+            {if (cnt.corners.Count <3)
                 {
-                    polypoints.Add(new PointF((float)crn.location.SafeX * imageratio, (float)crn.location.SafeY * imageratio));
-                }
-                polypoints.Add(new PointF((float)cnt.center.SafeX * imageratio, (float)cnt.center.SafeY * imageratio));
-                if (polypoints.Count > 1)
-                {
-                    g.DrawPolygon(blackpen, polypoints.ToArray());
-                    g.FillPolygon(pen, polypoints.ToArray());
+                    var pen = new SolidBrush(Color.FromArgb(randomizer.Next(0, 255), randomizer.Next(0, 255), randomizer.Next(0, 255)));
+                    var polypoints = new List<PointF>();
+                    foreach (Corners crn in cnt.corners)
+                    {
+                        polypoints.Add(new PointF((float)crn.location.X * imageratio, (float)crn.location.Y * imageratio));
+                    }
+                    polypoints.Add(new PointF((float)cnt.center.X * imageratio, (float)cnt.center.Y * imageratio));
+                    if (polypoints.Count > 1)
+                    {
+                        //  g.DrawPolygon(blackpen, polypoints.ToArray());
+                        g.FillPolygon(pen, polypoints.ToArray());
+                    }
                 }
             }
             return b;

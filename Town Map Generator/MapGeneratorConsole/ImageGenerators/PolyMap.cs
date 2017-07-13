@@ -31,38 +31,40 @@ namespace Town_Map_Generator
 
             MapGraph = new List<DualGraphVertex>();
             foreach (VoronoiSegment vrnseg in voronoimap.graph)
-            {
-                var delaunayline = vrnseg.DelaunayLine();
-                var voronoiline = vrnseg.VoronoiLine();
-                var corner1 = MakeCorner(voronoiline.startleft);
-                var corner2 = MakeCorner(voronoiline.endright);
-                var CenterLeft = MakeCenter(delaunayline.startleft);
-                var CenterRight = MakeCenter(delaunayline.endright);
+            { if (vrnseg.completed)
+                {
+                    var delaunayline = vrnseg.DelaunayLine();
+                    var voronoiline = vrnseg.VoronoiLine();
+                    var corner1 = MakeCorner(voronoiline.startleft);
+                    var corner2 = MakeCorner(voronoiline.endright);
+                    var CenterLeft = MakeCenter(delaunayline.startleft);
+                    var CenterRight = MakeCenter(delaunayline.endright);
 
-                corner1.AddToAdjacents(corner2);
-                corner2.AddToAdjacents(corner1);
+                    corner1.AddToAdjacents(corner2);
+                    corner2.AddToAdjacents(corner1);
 
-                CenterRight.AddToCorners(corner1);
-                CenterRight.AddToCorners(corner2);
+                    CenterRight.AddToCorners(corner1);
+                    CenterRight.AddToCorners(corner2);
 
-                CenterLeft.AddToCorners(corner1);
-                CenterRight.AddToCorners(corner2);
+                    CenterLeft.AddToCorners(corner1);
+                    CenterRight.AddToCorners(corner2);
 
-                var GraphVertex = new DualGraphVertex(0, CenterLeft, CenterRight, corner1, corner2, voronoiline.MidPoint());
+                    var GraphVertex = new DualGraphVertex(0, CenterLeft, CenterRight, corner1, corner2, voronoiline.MidPoint());
 
-                MapGraph.Add(GraphVertex);
+                    MapGraph.Add(GraphVertex);
 
-                CenterLeft.borders.Add(GraphVertex);
-                CenterRight.borders.Add(GraphVertex);
-                CenterLeft.AddToNeighbors(CenterRight);
-                CenterRight.AddToNeighbors(CenterLeft);
+                    CenterLeft.borders.Add(GraphVertex);
+                    CenterRight.borders.Add(GraphVertex);
+                    CenterLeft.AddToNeighbors(CenterRight);
+                    CenterRight.AddToNeighbors(CenterLeft);
 
-                corner1.protrudes.Add(GraphVertex);
-                corner2.protrudes.Add(GraphVertex);
-                corner1.AddToTouches(CenterLeft);
-                corner1.AddToTouches(CenterRight);
-                corner2.AddToTouches(CenterLeft);
-                corner2.AddToTouches(CenterRight);
+                    corner1.protrudes.Add(GraphVertex);
+                    corner2.protrudes.Add(GraphVertex);
+                    corner1.AddToTouches(CenterLeft);
+                    corner1.AddToTouches(CenterRight);
+                    corner2.AddToTouches(CenterLeft);
+                    corner2.AddToTouches(CenterRight);
+                }
             }
         }
 
@@ -71,11 +73,11 @@ namespace Town_Map_Generator
             int hash = vrnPnt.GetHashCode();
             if (_cornerLookup.ContainsKey(hash))
             {
-                var possibleCorner = _cornerLookup[hash].FirstOrDefault(crn => crn.location.SafeX == vrnPnt.SafeX && crn.location.SafeY == vrnPnt.SafeY);
+                var possibleCorner = _cornerLookup[hash].FirstOrDefault(crn => crn.location.X == vrnPnt.X && crn.location.Y == vrnPnt.Y);
 
                 if (possibleCorner != null)
                 {
-                    if (possibleCorner.location.SafeX == vrnPnt.SafeX && possibleCorner.location.SafeY == vrnPnt.SafeY)
+                    if (possibleCorner.location.X == vrnPnt.X && possibleCorner.location.Y == vrnPnt.Y)
                     {
                         return possibleCorner;
                     }
