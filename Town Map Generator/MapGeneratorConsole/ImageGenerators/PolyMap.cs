@@ -10,12 +10,16 @@ namespace Town_Map_Generator
     public class PolyMap
     {
         private VoronoiMap voronoimap;
-        public List<Centers> polys;
+        public List<Edges> polys;
         public List<Corners> polycorns;
         private List<VoronoiPoint> basepoints;
-        private Dictionary<int,Centers> _centerLookup;
-        private Dictionary<int, List<Corners>> _cornerLookup;
-        public List<DualGraphVertex> MapGraph;
+        private Dictionary<Guid, Centers> _centerLookup;
+        private Dictionary<Guid, Corners> _cornerLookup;
+        private Corners startCorner;
+        private Corners endCorner;
+        private Centers leftCenters;
+        private Centers rightCenters;
+            
 
         public PolyMap(VoronoiMap voronoimap, List<VoronoiPoint> basepoints)
         {
@@ -26,97 +30,80 @@ namespace Town_Map_Generator
 
         public void GenerateMainGraph()
         {
-            _centerLookup = new Dictionary<int, Centers>();
-            _cornerLookup = new Dictionary<int, List<Corners>>();
-
-            MapGraph = new List<DualGraphVertex>();
-            foreach (VoronoiSegment vrnseg in voronoimap.graph)
-            { if (vrnseg.completed)
-                {
-                    var delaunayline = vrnseg.DelaunayLine();
-                    var voronoiline = vrnseg.VoronoiLine();
-                    var corner1 = MakeCorner(voronoiline.startleft);
-                    var corner2 = MakeCorner(voronoiline.endright);
-                    var CenterLeft = MakeCenter(delaunayline.startleft);
-                    var CenterRight = MakeCenter(delaunayline.endright);
-
-                    corner1.AddToAdjacents(corner2);
-                    corner2.AddToAdjacents(corner1);
-
-                    CenterRight.AddToCorners(corner1);
-                    CenterRight.AddToCorners(corner2);
-
-                    CenterLeft.AddToCorners(corner1);
-                    CenterRight.AddToCorners(corner2);
-
-                    var GraphVertex = new DualGraphVertex(0, CenterLeft, CenterRight, corner1, corner2, voronoiline.MidPoint());
-
-                    MapGraph.Add(GraphVertex);
-
-                    CenterLeft.borders.Add(GraphVertex);
-                    CenterRight.borders.Add(GraphVertex);
-                    CenterLeft.AddToNeighbors(CenterRight);
-                    CenterRight.AddToNeighbors(CenterLeft);
-
-                    corner1.protrudes.Add(GraphVertex);
-                    corner2.protrudes.Add(GraphVertex);
-                    corner1.AddToTouches(CenterLeft);
-                    corner1.AddToTouches(CenterRight);
-                    corner2.AddToTouches(CenterLeft);
-                    corner2.AddToTouches(CenterRight);
-                }
+            polys = new List<Edges>();
+            _centerLookup = new Dictionary<Guid, Centers>();
+            _cornerLookup = new Dictionary<Guid, Corners>();
+            foreach (VoronoiSegment vrnSeg in voronoimap.FinishedGraph())
+            {
+                ClearCornerCenterEdgeCache();
+                GenerateandCheckCenters(vrnSeg);
+                GenerateandCheckCorners(vrnSeg);
+                GenerateEdge(vrnSeg.VoronoiLine());
+                
             }
         }
 
-        public Corners MakeCorner(VoronoiPoint vrnPnt)
+        public void GenerateandCheckCenters(VoronoiSegment vrnSeg)
         {
-            int hash = vrnPnt.GetHashCode();
-            if (_cornerLookup.ContainsKey(hash))
-            {
-                var possibleCorner = _cornerLookup[hash].FirstOrDefault(crn => crn.location.X == vrnPnt.X && crn.location.Y == vrnPnt.Y);
+            var delaunayline = vrnSeg.DelaunayLine();
+            leftCenters = CenterWarehouse(delaunayline.startleft);
+            rightCenters = CenterWarehouse(delaunayline.endright);
+        }
 
-                if (possibleCorner != null)
-                {
-                    if (possibleCorner.location.X == vrnPnt.X && possibleCorner.location.Y == vrnPnt.Y)
-                    {
-                        return possibleCorner;
-                    }
-                    else
-                    {
-                        return null;
-                    }
-                }
-                else
-                {
-                    var newCorner = new Corners(_cornerLookup[hash].Count,vrnPnt);
-                    _cornerLookup[hash].Add(newCorner);
-                    return newCorner;
-                }
+        public void GenerateandCheckCorners(VoronoiSegment vrnSeg)
+        {
+            var voronoiline = vrnSeg.VoronoiLine();
+            startCorner = MakeCorner(voronoiline.startleft);
+            endCorner = MakeCorner(voronoiline.endright);
+        }
+
+        private Corners MakeCorner(VoronoiPoint cornerPnt)
+        {
+            if (cornerPnt == null)
+            {
+                return null;
+            }
+            if (_cornerLookup.ContainsKey(cornerPnt.guid))
+            {
+                return _cornerLookup[cornerPnt.guid];
             }
             else
             {
-                var cornerlist = new List<Corners>();
-                var newCorner = new Corners(0, vrnPnt);
-                cornerlist.Add(newCorner);
-                _cornerLookup.Add(hash , cornerlist);
-                return newCorner;
+                var newcorner = new Corners(_cornerLookup.Count, cornerPnt);
+                _cornerLookup[newcorner.GetGuid()] = newcorner;
+                return newcorner;
             }
+
+            
         }
-        public Centers MakeCenter(VoronoiPoint dlnyPnt)
+
+        private Centers CenterWarehouse(VoronoiPoint centerPoint)
         {
-            var hash = dlnyPnt.GetHashCode();
-            if (_centerLookup.ContainsKey(hash))
+            if (_centerLookup.ContainsKey(centerPoint.guid))
             {
-                return _centerLookup[hash];
+                return _centerLookup[centerPoint.guid];
             }
             else
             {
-                var newCenter = new Centers(_centerLookup.Count, dlnyPnt);
-                _centerLookup[hash] = newCenter;
-                return newCenter;
+                var newcenter = new Centers(_centerLookup.Count, centerPoint);
+                _centerLookup[newcenter.GetGuid()] = newcenter;
+                return newcenter;
             }
         }
 
+        public void GenerateEdge(Line vrnMidPoint)
+        {
+            polys.Add(new Edges(_centerLookup.Count, leftCenters, rightCenters, startCorner, endCorner, vrnMidPoint.MidPoint()));
+        }
+
+
+        private void ClearCornerCenterEdgeCache()
+        {
+            leftCenters = null;
+            rightCenters = null;
+            startCorner = null;
+            endCorner = null;
+        }
     }
 
 }

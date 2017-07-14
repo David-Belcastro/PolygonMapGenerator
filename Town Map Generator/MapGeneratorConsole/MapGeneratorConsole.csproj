@@ -96,7 +96,7 @@
     <Compile Include="CubesFortune\VoronoiEvents.cs" />
     <Compile Include="ImageGenerators\Graph\Centers.cs" />
     <Compile Include="ImageGenerators\Graph\Corners.cs" />
-    <Compile Include="ImageGenerators\Graph\DualGraphVertex.cs" />
+    <Compile Include="ImageGenerators\Graph\Edges.cs" />
     <Compile Include="ImageGenerators\Graph\Line.cs" />
     <Compile Include="ImageGenerators\ImageDrawer.cs" />
     <Compile Include="ImageGenerators\PointGenerator.cs" />

@@ -14,6 +14,12 @@ namespace CubesFortune
         {
             graph = unfinishedgraph;
         }
+
+        public List<VoronoiSegment> FinishedGraph()
+        {
+            var newgraph = graph.FindAll(x => x.completed == true);
+            return newgraph;
+        }
     }
 
     public class CubesVoronoiMapper
@@ -34,7 +40,7 @@ namespace CubesFortune
 
             foreach (VoronoiPoint pt in sites)
             {
-                var pointasevent = new SiteEvent(pt.X, pt.Y);
+                var pointasevent = new SiteEvent(pt);
                 eventQ.AddNode(pointasevent);
             }
 
@@ -68,7 +74,7 @@ namespace CubesFortune
         public void ProcessPointEvent()
         {
             var p = eventQ.PeekAndRemoveSmallest();
-            var pointAsEvent = new SiteEvent(p.X, p.Y);
+            var pointAsEvent = new SiteEvent(p.basepoint);
             regionsT.AddToBeachLine(pointAsEvent);
             AddCreatedCircleEvents();
         }

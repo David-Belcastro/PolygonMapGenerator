@@ -10,14 +10,14 @@ namespace CubesFortune.CubesFortune.Tests
 {
     public class intersectingpoints
     {
-        public SiteEvent pt1 = new SiteEvent(1, 1);
-        public SiteEvent pt2 = new SiteEvent(3.75, 10);
-        public SiteEvent pt3 = new SiteEvent(4, 11);
-        public SiteEvent pt4 = new SiteEvent(5, 11);
-        public SiteEvent pt5 = new SiteEvent(3, 4);
-        public SiteEvent pt6 = new SiteEvent(7, 4);
+        public SiteEvent pt1 = new SiteEvent(new VoronoiPoint(1, 1));
+        public SiteEvent pt2 = new SiteEvent(new VoronoiPoint(3.75, 10));
+        public SiteEvent pt3 = new SiteEvent(new VoronoiPoint(4, 11));
+        public SiteEvent pt4 = new SiteEvent(new VoronoiPoint(5, 11));
+        public SiteEvent pt5 = new SiteEvent(new VoronoiPoint(3, 4));
+        public SiteEvent pt6 = new SiteEvent(new VoronoiPoint(7, 4));
 
-        public SiteEvent testsite = new SiteEvent(2.5, 9);
+        public SiteEvent testsite = new SiteEvent(new VoronoiPoint(2.5, 9));
 
         public Arc arc1;
         public Arc arc2;
@@ -51,7 +51,7 @@ namespace CubesFortune.CubesFortune.Tests
         public void AddToBeachLineTest_AddPointToNonExistantBeachLine_PointisnowBeachline()
         {
             var sut = new SweepTable();
-            var testevent = new SiteEvent(1, 1);
+            var testevent = new SiteEvent(new VoronoiPoint(1, 1));
             sut.AddToBeachLine(testevent);
             Assert.AreSame(testevent, sut.BeachPoints.arcpoint);
             Assert.AreEqual(1, sut.BeachPoints.arcpoint.X);
@@ -78,21 +78,21 @@ namespace CubesFortune.CubesFortune.Tests
         [TestMethod()]
         public void CheckCircleEventCheck_righthandcircle_returnsblankevent()
         {
-            var pointa = new SiteEvent(10, 10);
-            var pointb = new SiteEvent(20, 15);
-            var pointc = new SiteEvent(15, 20);
+            var pointa = new SiteEvent(new VoronoiPoint(10, 10));
+            var pointb = new SiteEvent(new VoronoiPoint(20, 15));
+            var pointc = new SiteEvent(new VoronoiPoint(15, 20));
 
             var sut = new SweepTable();
             var circlecheck = sut.CalculateCircleEventCheck(pointa, pointb, pointc);
-            Assert.IsFalse(circlecheck.isCircle);            
+            Assert.IsFalse(circlecheck.isCircle);
         }
 
         [TestMethod()]
         public void CheckCircleEventCheck_sitesdifferent_returnscircleincenter()
         {
-            var pointa = new SiteEvent(10, 10);
-            var pointb = new SiteEvent(20, 15);
-            var pointc = new SiteEvent(15, 20);
+            var pointa = new SiteEvent(new VoronoiPoint(10, 10));
+            var pointb = new SiteEvent(new VoronoiPoint(20, 15));
+            var pointc = new SiteEvent(new VoronoiPoint(15, 20));
 
             var sut = new SweepTable();
             var circlecheck = sut.CalculateCircleEventCheck(pointc, pointb, pointa);
@@ -105,14 +105,14 @@ namespace CubesFortune.CubesFortune.Tests
         public void FindIntersectedArcTest_EmptyBreachList_ReturnsNull()
         {
             var sut = new SweepTable();
-            Assert.IsFalse(sut.FindIntersectedArc(new SiteEvent(1, 1), null).flag);
+            Assert.IsFalse(sut.FindIntersectedArc(new SiteEvent(new VoronoiPoint(1, 1)), null).flag);
         }
 
         [TestMethod()]
         public void FindIntersectedArcTest_PointIsSameAsInspectedPoint_ReturnsNull()
         {
             var sut = new SweepTable();
-            Assert.IsFalse(sut.FindIntersectedArc(new SiteEvent(1, 1), new Arc(new SiteEvent(1, 1))).flag);
+            Assert.IsFalse(sut.FindIntersectedArc(new SiteEvent(new VoronoiPoint(1, 1)), new Arc(new SiteEvent(new VoronoiPoint(1, 1)))).flag);
         }
 
         [TestMethod()]
@@ -121,7 +121,7 @@ namespace CubesFortune.CubesFortune.Tests
             var intpoints = new intersectingpoints();
 
             var sut = new SweepTable { BeachPoints = intpoints.arc3 };
-            var newsite = sut.FindIntersectedArc(new SiteEvent(2.5, 9), intpoints.arc3);
+            var newsite = sut.FindIntersectedArc(new SiteEvent(new VoronoiPoint(2.5, 9)), intpoints.arc3);
             Assert.IsTrue(newsite.flag);
         }
 
@@ -129,10 +129,10 @@ namespace CubesFortune.CubesFortune.Tests
         public void ParabolaIntersectionTest()
         {
             var sut = new SweepTable();
-            var varparabolaresult = sut.ParabolaIntersection(new SiteEvent(3.75, 10), new SiteEvent(4, 11), 2.5);
+            var varparabolaresult = sut.ParabolaIntersection(new SiteEvent(new VoronoiPoint(3.75, 10)), new SiteEvent(new VoronoiPoint(4, 11)), 2.5);
             Assert.AreEqual(-.64579, varparabolaresult.Y, .0001);
 
-            varparabolaresult = sut.ParabolaIntersection(new SiteEvent(4, 11), new SiteEvent(5, 11), 2.5);
+            varparabolaresult = sut.ParabolaIntersection(new SiteEvent(new VoronoiPoint(4, 11)), new SiteEvent(new VoronoiPoint(5, 11)), 2.5);
             Assert.AreEqual(9.063508, varparabolaresult.Y, .0001);
 
         }
@@ -141,7 +141,7 @@ namespace CubesFortune.CubesFortune.Tests
         public void CheckForCircleEventTest_pointsAreLinear_ReturnsFalseCheckFlag()
         {
             var sut = new SweepTable();
-            var circlecheck = sut.CalculateCircleEventCheck(new SiteEvent(1, 1), new SiteEvent(1, 2), new SiteEvent(1, .5));
+            var circlecheck = sut.CalculateCircleEventCheck(new SiteEvent(new VoronoiPoint(1, 1)), new SiteEvent(new VoronoiPoint(1, 2)), new SiteEvent(new VoronoiPoint(1, .5)));
             Assert.IsFalse(circlecheck.isCircle);
 
         }
@@ -151,7 +151,7 @@ namespace CubesFortune.CubesFortune.Tests
         {
 
             var sut = new SweepTable();
-            var circlecheck = sut.CalculateCircleEventCheck(new SiteEvent(1, 1), new SiteEvent(1, 2), new SiteEvent(2, 2));
+            var circlecheck = sut.CalculateCircleEventCheck(new SiteEvent(new VoronoiPoint(1, 1)), new SiteEvent(new VoronoiPoint(1, 2)), new SiteEvent(new VoronoiPoint(2, 2)));
             Assert.IsTrue(circlecheck.isCircle);
         }
 
@@ -160,14 +160,14 @@ namespace CubesFortune.CubesFortune.Tests
         {
 
             var sut = new SweepTable();
-            var circlecheck = sut.CalculateCircleEventCheck(new SiteEvent(3, 2), new SiteEvent(2, 2), new SiteEvent(2, 1));
+            var circlecheck = sut.CalculateCircleEventCheck(new SiteEvent(new VoronoiPoint(3, 2)), new SiteEvent(new VoronoiPoint(2, 2)), new SiteEvent(new VoronoiPoint(2, 1)));
             Assert.IsFalse(circlecheck.isCircle);
         }
 
         [TestMethod()]
         public void FinishEdgesTest_nowaitingpoints_returnsemptygraph()
         {
-            var sut = new SweepTable { BeachPoints = new Arc() } ;
+            var sut = new SweepTable { BeachPoints = new Arc() };
             Assert.IsInstanceOfType(sut.FinishEdges(), typeof(VoronoiMap));
             Assert.AreEqual(0, sut.FinishEdges().graph.Count);
         }

@@ -28,8 +28,8 @@ namespace ceometric.DelaunayTriangulator
 
         public Point(VoronoiPoint vrnPoint)
         {
-            X = vrnPoint.SafeX;
-            Y = vrnPoint.SafeY;
+            X = vrnPoint.X;
+            Y = vrnPoint.Y;
 
         }
 

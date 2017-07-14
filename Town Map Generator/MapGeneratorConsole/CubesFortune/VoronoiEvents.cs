@@ -5,8 +5,9 @@ namespace CubesFortune
 {
     public interface IVoronoiPoint
     {
-        double X { get; set; }
-        double Y { get; set; }
+        double X { get; }
+        double Y { get; }
+        VoronoiPoint basepoint { get; set; }
         Arc primaryArc { get; set; }
         bool isNodeValid { get; }
         SiteEvent Center { get; set; }
@@ -20,18 +21,18 @@ namespace CubesFortune
 
     public class SiteEvent : IVoronoiPoint
     {
-        public double X { get; set; }
-        public double Y { get; set; }
+        public double X { get { return basepoint.X; } }
+        public double Y { get { return basepoint.Y; } }
 
+        public VoronoiPoint basepoint { get; set; }
         public bool isNodeValid { get; set; }
         public Arc primaryArc { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public SiteEvent Center { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public double circleLength { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-        public SiteEvent(double x, double y)
+        public SiteEvent(VoronoiPoint point)
         {
-            X = x;
-            Y = y;
+            basepoint = point;
         }
 
         public bool IsCircleEvent
@@ -59,6 +60,7 @@ namespace CubesFortune
         public SiteEvent Center { get; set; }
         public double circleLength { get; set; }
 
+        public VoronoiPoint basepoint { get; set; }
         public double Y
         {
             get
@@ -179,26 +181,24 @@ namespace CubesFortune
     {
         public double X;
         public double Y;
-
-        public double SafeX;
-        public double SafeY;
+        public Guid guid;
 
         public VoronoiPoint(double x, double y)
         {
             X = x;
             Y = y;
-            SetSafePoints();
+            guid = Guid.NewGuid();
         }
 
-        public void SetSafePoints()
-        {
-            SafeX = X;
-            SafeY = Y;
-        }
 
         public ceometric.DelaunayTriangulator.Point Point()
         {
-            return new ceometric.DelaunayTriangulator.Point(SafeX, SafeY, 0);
+            return new ceometric.DelaunayTriangulator.Point(X, Y, 0);
+        }
+
+        public override int GetHashCode()
+        {
+            return guid.GetHashCode();
         }
     }
 
@@ -220,8 +220,8 @@ namespace CubesFortune
         {
             start = new VoronoiPoint(startX, startY);
             creationpoint = cp;
-            LeftNode = new VoronoiPoint(lefts0.arcpoint.X, lefts0.arcpoint.Y);
-            RightNode = new VoronoiPoint(rights1.arcpoint.X, rights1.arcpoint.Y);
+            LeftNode = lefts0.arcpoint.basepoint;
+            RightNode = rights1.arcpoint.basepoint;
             System.Diagnostics.Debug.WriteLine("Creating point at ({0},{1}) from code {2}", startX, startY, cp);
         }
 
@@ -241,11 +241,11 @@ namespace CubesFortune
             end = new VoronoiPoint(startX, startY);
             completed = true;
             CalculateSlopeAndIntercept();
-            SetSafeXAndY();
+            SetXAndY();
             System.Diagnostics.Debug.WriteLine("Creating point at ({0},{1}) from code {2}", startX, startY, cp);
         }
 
-        public void SetSafeXAndY()
+        public void SetXAndY()
         {
             var largestpointstart = Math.Max(Math.Abs((start.X)), Math.Abs(start.Y));
             var largestpointend = Math.Max(Math.Abs(end.X), Math.Abs(end.Y));
@@ -253,31 +253,29 @@ namespace CubesFortune
             {
                 if (largestpointstart == Math.Abs(start.X))
                 {
-                    start.SafeX = getlimit(start.X);
-                    start.SafeY = GetYCoord(start.SafeX);
+                    start.X = getlimit(start.X);
+                    start.Y = GetYCoord(start.X);
                 }
                 else
                 {
-                    start.SafeY = getlimit(start.Y);
-                    start.SafeX = GetXCoord(start.SafeY);
+                    start.Y = getlimit(start.Y);
+                    start.X = GetXCoord(start.Y);
                 }
             }
-            else { start.SafeX = start.X; start.SafeY = start.Y; }
 
             if (largestpointend > 10000)
             {
                 if (largestpointend == Math.Abs(end.X))
                 {
-                    end.SafeX = getlimit(end.X);
-                    end.SafeY = GetYCoord(end.SafeX);
+                    end.X = getlimit(end.X);
+                    end.Y = GetYCoord(end.X);
                 }
                 else
                 {
-                    end.SafeY = getlimit(end.Y);
-                    end.SafeX = GetXCoord(end.SafeY);
+                    end.Y = getlimit(end.Y);
+                    end.X = GetXCoord(end.Y);
                 }
             }
-            else { end.SafeX = end.X; end.SafeY = end.Y; }
         }
 
         public double getlimit(double testednumber)

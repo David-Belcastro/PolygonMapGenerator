@@ -112,7 +112,7 @@ namespace CubesFortune
                 knownSite.nextpoint = new Arc(newarcpoint, knownSite);
                 var x = _boundx0;
                 var y = (knownSite.nextpoint.arcpoint.Y + knownSite.arcpoint.Y) / 2.0;
-                var segmentEvent = new SiteEvent(x, y);
+                var segmentEvent = new SiteEvent(new VoronoiPoint(x,y));
                 var vSeg = new VoronoiSegment(segmentEvent.X, segmentEvent.Y,knownSite.nextpoint,knownSite, 1);
                 VoronoiGraph.Add(vSeg);
                 knownSite.s1 = vSeg;
@@ -172,7 +172,7 @@ namespace CubesFortune
             var oy = 1.0 * (A * F - C * E) / G;
 
             var x = ox + Math.Sqrt(Math.Pow((a.X - ox),2) + Math.Pow((a.Y - oy),2));
-            var o = new SiteEvent(ox, oy);
+            var o = new SiteEvent(new VoronoiPoint(ox, oy));
 
             return new CircleeventCheck(x, o);
             
@@ -246,7 +246,7 @@ namespace CubesFortune
             {
                 var py = newPoint.Y;
                 double px = CalculatePX(newPoint, intersectedKnownSite, py);
-                return new IntersectionFlag(true, new SiteEvent(px, py));
+                return new IntersectionFlag(true, new SiteEvent(new VoronoiPoint(px, py)));
             }
             return nomatch;
         }
@@ -287,7 +287,7 @@ namespace CubesFortune
 
             }
             var px = 1.0 * (Math.Pow(p.X, 2) + Math.Pow((p.Y - py), 2) - Math.Pow(newpointX, 2)) / (2 * p.X - 2 * newpointX);
-            var res = new SiteEvent(px, py);
+            var res = new SiteEvent(new VoronoiPoint(px, py));
             return res;
         }
 

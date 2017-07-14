@@ -1,34 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
 using CubesFortune;
+using System.Linq;
 namespace MapGeneratorConsole.ImageGenerators.Graph
 {
-    public class Centers
+    public class Centers : IEquatable<Centers>
     {
         public int index;
         public VoronoiPoint center;
         public List<Centers> neigbors;
-        public List<DualGraphVertex> borders;
-        public List<Corners> corners; 
+        public List<Edges> borders;
+        public List<Corners> corners;
 
         public Centers(int indx, VoronoiPoint polycenter)
         {
             index = indx;
             center = polycenter;
             neigbors = new List<Centers>();
-            borders = new List<DualGraphVertex>();
+            borders = new List<Edges>();
             corners = new List<Corners>();
         }
-
-        internal void AddToNeighbors(Centers d1)
+        public List<Corners> SortedCorners()
         {
-            if (d1 != null && !neigbors.Contains(d1))
+            return corners.OrderBy(x => Math.Atan2(x.location.Y-center.Y, x.location.X-center.X)).ToList();
+        }   
+    
+
+internal void AddToNeighbors(Centers d1)
+        {
+            if (d1 != null && !neigbors.Any(x => x.Equals(d1)))
             {
                 neigbors.Add(d1);
             }
         }
 
-        internal void BordersandCorners(DualGraphVertex dualGraphVertex, Corners v0, Corners v1)
+        internal void BordersandCorners(Edges dualGraphVertex, Corners v0, Corners v1)
         {
             borders.Add(dualGraphVertex);
             AddToCorners(v0);
@@ -37,10 +43,30 @@ namespace MapGeneratorConsole.ImageGenerators.Graph
 
         internal void AddToCorners(Corners d1)
         {
-            if (d1 != null && !corners.Contains(d1))
+            if (d1 != null && !corners.Any(x => x.Equals(d1)))
             {
                 corners.Add(d1);
             }
+        }
+
+        public override int GetHashCode()
+        {
+            return center.GetHashCode();
+        }
+
+        public bool Equals(Centers other)
+        {
+            if (other.center.X == center.X && other.center.Y == center.Y)
+            {
+                return true;
+            }
+            else
+                return false;
+        }
+
+        internal Guid GetGuid()
+        {
+            return center.guid;
         }
     }
 }

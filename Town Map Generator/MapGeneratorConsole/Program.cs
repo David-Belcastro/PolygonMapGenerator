@@ -11,12 +11,12 @@ namespace CubesFortune
     {
         static void Main(string[] args)
         {
-            int? mapsize = 100
-                ;
-            //Console.WriteLine("How big you want it boss?");
-           // while (mapsize == null){
-            //    mapsize = GetUserInputForMapSize(Console.ReadLine());
-           // }
+            int? mapsize = null;
+            Console.WriteLine("How big you want it boss?");
+            while (mapsize == null)
+            {
+                mapsize = GetUserInputForMapSize(Console.ReadLine());
+            }
 
 
 
@@ -25,9 +25,9 @@ namespace CubesFortune
 
          
                 generator.createimage(mapsize ?? 3600);
-          
-            //Console.WriteLine("All Done");
-            //Console.ReadLine();
+
+            Console.WriteLine("All Done");
+            Console.ReadLine();
         }
 
         private static int? GetUserInputForMapSize(string userinput)

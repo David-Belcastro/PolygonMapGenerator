@@ -5,6 +5,7 @@ using ceometric.DelaunayTriangulator;
 using CubesFortune;
 using MapGeneratorConsole.ImageGenerators.Graph;
 using System;
+using System.Linq;
 
 namespace Town_Map_Generator
 {
@@ -35,10 +36,10 @@ namespace Town_Map_Generator
                 var pen = new SolidBrush(Color.Red);
                 var randomizer = new System.Random();
                 var cornerpen = new Pen(Color.Green);
-                g.FillRectangle(pen, (float)seg.start.SafeX * imageratio, (float)seg.start.SafeY * imageratio, 2, 2);
+                g.FillRectangle(pen, (float)seg.start.X * imageratio, (float)seg.start.Y * imageratio, 2, 2);
                 if (seg.completed)
                 {
-                    g.DrawLine(cornerpen, (float)seg.start.SafeX * imageratio, (float)seg.start.SafeY * imageratio, (float)seg.end.SafeX * imageratio, (float)seg.end.SafeY * imageratio);
+                    g.DrawLine(cornerpen, (float)seg.start.X * imageratio, (float)seg.start.Y * imageratio, (float)seg.end.X * imageratio, (float)seg.end.Y * imageratio);
                 }
 
             }
@@ -58,7 +59,7 @@ namespace Town_Map_Generator
             return b;
         }
 
-        internal Bitmap DrawMapGraph(List<VoronoiPoint> pointlist, List<DualGraphVertex> mapGraph)
+        internal Bitmap DrawMapGraph(List<VoronoiPoint> pointlist, List<Edges> mapGraph)
         {
             b = new Bitmap(1000, 1000);
             var g = Graphics.FromImage(b);
@@ -66,35 +67,35 @@ namespace Town_Map_Generator
             float imageratio = 100f;
             var blackpen = new Pen(Color.Black,1);
             var blackbrusy = new SolidBrush(Color.Black);
-            foreach (DualGraphVertex poly in mapGraph)
+            foreach (Edges poly in mapGraph)
             {
                 
-                if (poly.d0 != null)
+                if (poly.delaunayCenter1 != null)
                 {
-                    centerlist.Add(poly.d0);
+                    centerlist.Add(poly.delaunayCenter1);
                 }
-                if (poly.d1 != null)
+                if (poly.delaunayCenter2 != null)
                 {
-                    centerlist.Add(poly.d1);
+                    centerlist.Add(poly.delaunayCenter2);
                 }
             }
             foreach ( Centers cnt in centerlist)
-            {if (cnt.corners.Count <3)
+            
                 {
                     var pen = new SolidBrush(Color.FromArgb(randomizer.Next(0, 255), randomizer.Next(0, 255), randomizer.Next(0, 255)));
                     var polypoints = new List<PointF>();
-                    foreach (Corners crn in cnt.corners)
+                    foreach (Corners crn in cnt.SortedCorners())
                     {
                         polypoints.Add(new PointF((float)crn.location.X * imageratio, (float)crn.location.Y * imageratio));
                     }
-                    polypoints.Add(new PointF((float)cnt.center.X * imageratio, (float)cnt.center.Y * imageratio));
+     //               polypoints.Add(new PointF((float)cnt.center.X * imageratio, (float)cnt.center.Y * imageratio));
                     if (polypoints.Count > 1)
                     {
                         //  g.DrawPolygon(blackpen, polypoints.ToArray());
                         g.FillPolygon(pen, polypoints.ToArray());
                     }
                 }
-            }
+            
             return b;
         }
     }
