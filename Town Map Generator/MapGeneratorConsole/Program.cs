@@ -19,13 +19,14 @@ namespace CubesFortune
             }
 
 
+            for (int i = 0; i< 5; i++)
+            {
+                //Console.WriteLine(mapsize);
+                var generator = new ImageGenerator(new Random().Next());
 
-            //Console.WriteLine(mapsize);
-            var generator = new ImageGenerator(new Random().Next());
 
-         
                 generator.createimage(mapsize ?? 3600);
-
+            }
             Console.WriteLine("All Done");
             Console.ReadLine();
         }

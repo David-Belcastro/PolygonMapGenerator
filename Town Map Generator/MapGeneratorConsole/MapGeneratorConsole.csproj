@@ -95,10 +95,13 @@
     <Compile Include="CubesFortune\SweepTable.cs" />
     <Compile Include="CubesFortune\VoronoiEvents.cs" />
     <Compile Include="ImageGenerators\Graph\Centers.cs" />
+    <Compile Include="ImageGenerators\Graph\MapData.cs" />
     <Compile Include="ImageGenerators\Graph\Corners.cs" />
     <Compile Include="ImageGenerators\Graph\Edges.cs" />
     <Compile Include="ImageGenerators\Graph\Line.cs" />
     <Compile Include="ImageGenerators\ImageDrawer.cs" />
+    <Compile Include="ImageGenerators\IslandFactory.cs" />
+    <Compile Include="ImageGenerators\IslandGenerator.cs" />
     <Compile Include="ImageGenerators\PointGenerator.cs" />
     <Compile Include="ImageGenerators\PolyMap.cs" />
     <Compile Include="DelaunayTriangulator\Delaunay.cs" />

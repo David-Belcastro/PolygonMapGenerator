@@ -12,15 +12,18 @@ namespace MapGeneratorConsole.ImageGenerators.Graph
         public List<Centers> touches;
         public List<Edges> protrudes;
         public List<Corners> adjacents;
+        
+        public CornerMapData mapdata;
 
         public Corners(int ind, VoronoiPoint pointloc)
         {
             index = ind;
             location = pointloc;
-            border = (pointloc.X <= 0 || pointloc.X >= 1000 || pointloc.Y <= 0 || pointloc.Y > 1000);
+            border = (pointloc.X <= 0 || pointloc.X >= 10 || pointloc.Y <= 0 || pointloc.Y > 10);
             touches = new List<Centers>();
             protrudes = new List<Edges>();
             adjacents = new List<Corners>();
+            mapdata = new CornerMapData();
         }
 
         internal void AddToAdjacents(Corners d1)

@@ -16,6 +16,7 @@ namespace MapGeneratorConsole.ImageGenerators.Graph
         public Corners voronoiCorner1;
         public Corners voronoiCorner2;
         public VoronoiPoint midpoint;
+        public EdgeMapData mapdata;
         
         public Edges(int index, Centers leftCenter, Centers rightCenter, Corners startCorner, Corners endCorner, VoronoiPoint mdpt)
         {
@@ -26,6 +27,7 @@ namespace MapGeneratorConsole.ImageGenerators.Graph
             voronoiCorner2 = endCorner;
             midpoint = mdpt;
             BordersAndProtrudes();
+            mapdata = new EdgeMapData();
            
         }
         

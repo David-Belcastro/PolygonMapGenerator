@@ -64,6 +64,7 @@
     <Compile Include="CubesFortune\SweepTableTests.cs" />
     <Compile Include="CubesFortune\VoronoiSegmentTests.cs" />
     <Compile Include="ImageGenerators\GRaph\GraphModelTests.cs" />
+    <Compile Include="ImageGenerators\IslandGeneratorTests.cs" />
     <Compile Include="ImageGenerators\PointGeneratorTests.cs" />
     <Compile Include="ImageGenerators\PolyMapTests.cs" />
     <Compile Include="PointGens\TriangleTests.cs" />

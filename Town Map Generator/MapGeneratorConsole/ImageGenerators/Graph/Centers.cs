@@ -11,6 +11,8 @@ namespace MapGeneratorConsole.ImageGenerators.Graph
         public List<Centers> neigbors;
         public List<Edges> borders;
         public List<Corners> corners;
+        public CenterMapData mapData;
+        internal bool border = false;
 
         public Centers(int indx, VoronoiPoint polycenter)
         {
@@ -19,6 +21,7 @@ namespace MapGeneratorConsole.ImageGenerators.Graph
             neigbors = new List<Centers>();
             borders = new List<Edges>();
             corners = new List<Corners>();
+            mapData = new CenterMapData();
         }
         public List<Corners> SortedCorners()
         {
@@ -26,7 +29,7 @@ namespace MapGeneratorConsole.ImageGenerators.Graph
         }   
     
 
-internal void AddToNeighbors(Centers d1)
+        internal void AddToNeighbors(Centers d1)
         {
             if (d1 != null && !neigbors.Any(x => x.Equals(d1)))
             {

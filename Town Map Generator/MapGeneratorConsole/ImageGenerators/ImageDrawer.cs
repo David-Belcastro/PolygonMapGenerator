@@ -20,6 +20,65 @@ namespace Town_Map_Generator
             b = new Bitmap(1000, 1000);
         }
 
+
+        internal Bitmap DrawIsland(List<VoronoiPoint> pointlist, List<Edges> mapGraph)
+        {
+            b = new Bitmap(1000, 1000);
+            var g = Graphics.FromImage(b);
+            var centerlist = new List<Centers>();
+            float imageratio = 100f;
+            var blackpen = new Pen(Color.Black, 1);
+            var blackbrusy = new SolidBrush(Color.Black);
+            var oceanpen = new SolidBrush(Color.DarkBlue);
+            var lakepen = new SolidBrush(Color.LightBlue);
+            var coastpen = new SolidBrush(Color.Tan);
+            var landpend = new SolidBrush(Color.Green);
+            foreach (Edges poly in mapGraph)
+            {
+
+                if (poly.delaunayCenter1 != null)
+                {
+                    centerlist.Add(poly.delaunayCenter1);
+                }
+                if (poly.delaunayCenter2 != null)
+                {
+                    centerlist.Add(poly.delaunayCenter2);
+                }
+
+            }
+            foreach (Centers cnt in centerlist)
+
+            {
+                var polypoints = new List<PointF>();
+                foreach (Corners crn in cnt.SortedCorners())
+                {
+                    polypoints.Add(new PointF((float)crn.location.X * imageratio, (float)crn.location.Y * imageratio));
+                }
+                if (polypoints.Count > 1)
+                {
+                    g.DrawPolygon(blackpen, polypoints.ToArray());
+                    if (cnt.mapData.Ocean)
+                    {
+                        g.FillPolygon(oceanpen, polypoints.ToArray());
+                    }
+                    else if (cnt.mapData.Coast)
+                    {
+                        g.FillPolygon(coastpen, polypoints.ToArray());
+                    }
+                    else if (cnt.mapData.Water)
+                    {
+                        g.FillPolygon(lakepen, polypoints.ToArray());
+                    }
+                    else 
+                    {
+                        g.FillPolygon(landpend, polypoints.ToArray());
+                    }
+                }
+            }
+
+            return b;
+        }
+
         public Bitmap DrawVoronoi(List<VoronoiPoint> pointlist, VoronoiMap voronoimap)
         {
             //var b = new Bitmap(1000, 1000);

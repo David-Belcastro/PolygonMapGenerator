@@ -10,8 +10,9 @@ namespace Town_Map_Generator
     public class PolyMap
     {
         private VoronoiMap voronoimap;
-        public List<Edges> polys;
-        public List<Corners> polycorns;
+        public List<Edges> edgelist;
+        public List<Corners> cornerlist;
+        public List<Centers> centerlist;
         private List<VoronoiPoint> basepoints;
         private Dictionary<Guid, Centers> _centerLookup;
         private Dictionary<Guid, Corners> _cornerLookup;
@@ -30,7 +31,9 @@ namespace Town_Map_Generator
 
         public void GenerateMainGraph()
         {
-            polys = new List<Edges>();
+            edgelist = new List<Edges>();
+            cornerlist = new List<Corners>();
+            centerlist = new List<Centers>();
             _centerLookup = new Dictionary<Guid, Centers>();
             _cornerLookup = new Dictionary<Guid, Corners>();
             foreach (VoronoiSegment vrnSeg in voronoimap.FinishedGraph())
@@ -71,6 +74,7 @@ namespace Town_Map_Generator
             {
                 var newcorner = new Corners(_cornerLookup.Count, cornerPnt);
                 _cornerLookup[newcorner.GetGuid()] = newcorner;
+                cornerlist.Add(newcorner);
                 return newcorner;
             }
 
@@ -87,13 +91,14 @@ namespace Town_Map_Generator
             {
                 var newcenter = new Centers(_centerLookup.Count, centerPoint);
                 _centerLookup[newcenter.GetGuid()] = newcenter;
+                centerlist.Add(newcenter);
                 return newcenter;
             }
         }
 
         public void GenerateEdge(Line vrnMidPoint)
         {
-            polys.Add(new Edges(_centerLookup.Count, leftCenters, rightCenters, startCorner, endCorner, vrnMidPoint.MidPoint()));
+            edgelist.Add(new Edges(_centerLookup.Count, leftCenters, rightCenters, startCorner, endCorner, vrnMidPoint.MidPoint()));
         }
 
 
