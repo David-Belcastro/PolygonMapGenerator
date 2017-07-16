@@ -22,14 +22,14 @@ namespace Town_Map_Generator
             IslandGenerator = new IslandGenerator(seed);
         }
 
-        internal void createimage(int points)
+        internal void createimage(int points, double variant)
         {
             pointgen = new PointGenerator(_RandomSeed);
             VoronoiGenerator = new CubesVoronoiMapper();
             var pointlist = pointgen.Givemepoints(points);
             var voronoimap = VoronoiGenerator.GimmesomeVeoroiois(pointlist);
             var polymap = new PolyMap(voronoimap, pointlist);
-            IslandGenerator.GenerateIsland(polymap);
+            IslandGenerator.GenerateIsland(polymap, variant);
             var b = new Bitmap(1000,1000);
             var g = Graphics.FromImage(b);
             var finallimage = ImagePainter.DrawIsland(pointlist, polymap.edgelist);

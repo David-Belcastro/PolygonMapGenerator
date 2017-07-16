@@ -15,12 +15,12 @@ namespace Town_Map_Generator
         public List<Centers> centerlist;
         private List<VoronoiPoint> basepoints;
         private Dictionary<Guid, Centers> _centerLookup;
-        private Dictionary<Guid, Corners> _cornerLookup;
+        private Dictionary<int, List<Corners>> _cornerLookup;
         private Corners startCorner;
         private Corners endCorner;
         private Centers leftCenters;
         private Centers rightCenters;
-            
+
 
         public PolyMap(VoronoiMap voronoimap, List<VoronoiPoint> basepoints)
         {
@@ -35,14 +35,14 @@ namespace Town_Map_Generator
             cornerlist = new List<Corners>();
             centerlist = new List<Centers>();
             _centerLookup = new Dictionary<Guid, Centers>();
-            _cornerLookup = new Dictionary<Guid, Corners>();
+            _cornerLookup = new Dictionary<int, List<Corners>>();
             foreach (VoronoiSegment vrnSeg in voronoimap.FinishedGraph())
             {
                 ClearCornerCenterEdgeCache();
                 GenerateandCheckCenters(vrnSeg);
                 GenerateandCheckCorners(vrnSeg);
                 GenerateEdge(vrnSeg.VoronoiLine());
-                
+
             }
         }
 
@@ -66,20 +66,33 @@ namespace Town_Map_Generator
             {
                 return null;
             }
-            if (_cornerLookup.ContainsKey(cornerPnt.guid))
+            for (var bck = (int)cornerPnt.X - 1; bck <= (int)cornerPnt.X + 1; bck++)
             {
-                return _cornerLookup[cornerPnt.guid];
+                if (_cornerLookup.ContainsKey(bck)) {
+                    foreach (Corners q in _cornerLookup[bck])
+                    {
+                        var dx = cornerPnt.X - q.location.X;
+                        var dy = cornerPnt.Y - q.location.Y;
+                        if (Math.Pow(dx, 2) + Math.Pow(dy, 2) < Math.Pow(10, -5))
+                        {
+                            return q;
+                        }
+                    }
+                }
             }
-            else
+            var bucket = (int)cornerPnt.X;
+            if (!_cornerLookup.ContainsKey(bucket))
             {
-                var newcorner = new Corners(_cornerLookup.Count, cornerPnt);
-                _cornerLookup[newcorner.GetGuid()] = newcorner;
-                cornerlist.Add(newcorner);
-                return newcorner;
+                _cornerLookup[bucket] = new List<Corners>();
             }
+            var newcorner = new Corners(_cornerLookup.Count, cornerPnt);
+            _cornerLookup[bucket].Add(newcorner);
+            cornerlist.Add(newcorner);
+            return newcorner;
 
-            
         }
+
+    
 
         private Centers CenterWarehouse(VoronoiPoint centerPoint)
         {

@@ -222,7 +222,7 @@ namespace CubesFortune
             creationpoint = cp;
             LeftNode = lefts0.arcpoint.basepoint;
             RightNode = rights1.arcpoint.basepoint;
-            System.Diagnostics.Debug.WriteLine("Creating point at ({0},{1}) from code {2}", startX, startY, cp);
+            //System.Diagnostics.Debug.WriteLine("Creating point at ({0},{1}) from code {2}", startX, startY, cp);
         }
 
         public void CalculateSlopeAndIntercept()
@@ -242,7 +242,7 @@ namespace CubesFortune
             completed = true;
             CalculateSlopeAndIntercept();
             SetXAndY();
-            System.Diagnostics.Debug.WriteLine("Creating point at ({0},{1}) from code {2}", startX, startY, cp);
+            //System.Diagnostics.Debug.WriteLine("Creating point at ({0},{1}) from code {2}", startX, startY, cp);
         }
 
         public void SetXAndY()

@@ -18,17 +18,19 @@ namespace CubesFortune
                 mapsize = GetUserInputForMapSize(Console.ReadLine());
             }
 
-
-            for (int i = 0; i< 5; i++)
+            var variant = 0.1;
+            //Console.WriteLine(mapsize);
+            for (var i = 0; i < 10; i++)
             {
-                //Console.WriteLine(mapsize);
                 var generator = new ImageGenerator(new Random().Next());
 
 
-                generator.createimage(mapsize ?? 3600);
+                generator.createimage(mapsize ?? 3600, variant);
+                variant += .1;
             }
-            Console.WriteLine("All Done");
-            Console.ReadLine();
+            
+            //Console.WriteLine("All Done");
+            //Console.ReadLine();
         }
 
         private static int? GetUserInputForMapSize(string userinput)

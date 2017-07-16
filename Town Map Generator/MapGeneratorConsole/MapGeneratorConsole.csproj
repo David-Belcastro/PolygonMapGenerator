@@ -94,6 +94,7 @@
     <Compile Include="CubesFortune\EventQueue.cs" />
     <Compile Include="CubesFortune\SweepTable.cs" />
     <Compile Include="CubesFortune\VoronoiEvents.cs" />
+    <Compile Include="ImageGenerators\Biomes.cs" />
     <Compile Include="ImageGenerators\Graph\Centers.cs" />
     <Compile Include="ImageGenerators\Graph\MapData.cs" />
     <Compile Include="ImageGenerators\Graph\Corners.cs" />

@@ -29,10 +29,24 @@ namespace Town_Map_Generator
             float imageratio = 100f;
             var blackpen = new Pen(Color.Black, 1);
             var blackbrusy = new SolidBrush(Color.Black);
-            var oceanpen = new SolidBrush(Color.DarkBlue);
-            var lakepen = new SolidBrush(Color.LightBlue);
-            var coastpen = new SolidBrush(Color.Tan);
-            var landpend = new SolidBrush(Color.Green);
+            var OceanPen = new SolidBrush(Color.DarkBlue);
+            var MarshPen = new SolidBrush(Color.Teal);
+            var IcePen = new SolidBrush(Color.GhostWhite);
+            var LakePen = new SolidBrush(Color.Blue);
+            var BeachPen = new SolidBrush(Color.AntiqueWhite);
+            var SnowPen = new SolidBrush(Color.White);
+            var TundraPen = new SolidBrush(Color.Snow);
+            var BarePen = new SolidBrush(Color.LightGray);
+            var ScorchedPen = new SolidBrush(Color.Sienna);
+            var TaigaPen = new SolidBrush(Color.CadetBlue);
+            var ShrublandPen = new SolidBrush(Color.Tan);
+            var PlainsPen = new SolidBrush(Color.Goldenrod);
+            var TemperateRainForestPen = new SolidBrush(Color.DarkGreen);
+            var ForestPen = new SolidBrush(Color.Green);
+            var GrasslandPen = new SolidBrush(Color.LawnGreen);
+            var TropicalRainForestPen = new SolidBrush(Color.YellowGreen);
+            var DesertPen = new SolidBrush(Color.Moccasin);
+
             foreach (Edges poly in mapGraph)
             {
 
@@ -46,9 +60,12 @@ namespace Town_Map_Generator
                 }
 
             }
-            foreach (Centers cnt in centerlist)
+
+            var maxelev = centerlist.Max(x => x.mapData.Elevation);
+           foreach (Centers cnt in centerlist)
 
             {
+                
                 var polypoints = new List<PointF>();
                 foreach (Corners crn in cnt.SortedCorners())
                 {
@@ -56,22 +73,69 @@ namespace Town_Map_Generator
                 }
                 if (polypoints.Count > 1)
                 {
-                    g.DrawPolygon(blackpen, polypoints.ToArray());
-                    if (cnt.mapData.Ocean)
+                    switch (cnt.mapData.Biome)
                     {
-                        g.FillPolygon(oceanpen, polypoints.ToArray());
+                        case MapGeneratorConsole.ImageGenerators.Biomes.Ocean:
+                            g.FillPolygon(OceanPen, polypoints.ToArray());
+                            break;
+                        case MapGeneratorConsole.ImageGenerators.Biomes.Marsh:
+                            g.FillPolygon(MarshPen, polypoints.ToArray());
+                            break;
+                        case MapGeneratorConsole.ImageGenerators.Biomes.Ice:
+                            g.FillPolygon(IcePen, polypoints.ToArray());
+                            break;
+                        case MapGeneratorConsole.ImageGenerators.Biomes.Lake:
+                            g.FillPolygon(LakePen, polypoints.ToArray());
+                            break;
+                        case MapGeneratorConsole.ImageGenerators.Biomes.Beach:
+                            g.FillPolygon(BeachPen, polypoints.ToArray());
+                            break;
+                        case MapGeneratorConsole.ImageGenerators.Biomes.Snow:
+                            g.FillPolygon(SnowPen, polypoints.ToArray());
+                            break;
+                        case MapGeneratorConsole.ImageGenerators.Biomes.Tundra:
+                            g.FillPolygon(TundraPen, polypoints.ToArray());
+                            break;
+                        case MapGeneratorConsole.ImageGenerators.Biomes.Bare:
+                            g.FillPolygon(BarePen, polypoints.ToArray());
+                            break;
+                        case MapGeneratorConsole.ImageGenerators.Biomes.Scorched:
+                            g.FillPolygon(ScorchedPen, polypoints.ToArray());
+                            break;
+                        case MapGeneratorConsole.ImageGenerators.Biomes.Taiga:
+                            g.FillPolygon(TaigaPen, polypoints.ToArray());
+                            break;
+                        case MapGeneratorConsole.ImageGenerators.Biomes.Shrubland:
+                            g.FillPolygon(ShrublandPen, polypoints.ToArray());
+                            break;
+                        case MapGeneratorConsole.ImageGenerators.Biomes.Plains:
+                            g.FillPolygon(PlainsPen, polypoints.ToArray());
+                            break;
+                        case MapGeneratorConsole.ImageGenerators.Biomes.TemperateRainForest:
+                            g.FillPolygon(TemperateRainForestPen, polypoints.ToArray());
+                            break;
+                        case MapGeneratorConsole.ImageGenerators.Biomes.Forest:
+                            g.FillPolygon(ForestPen, polypoints.ToArray());
+                            break;
+                        case MapGeneratorConsole.ImageGenerators.Biomes.Grassland:
+                            g.FillPolygon(GrasslandPen, polypoints.ToArray());
+                            break;
+                        case MapGeneratorConsole.ImageGenerators.Biomes.TropicalRainForest:
+                            g.FillPolygon(TropicalRainForestPen, polypoints.ToArray());
+                            break;
+                        case MapGeneratorConsole.ImageGenerators.Biomes.Desert:
+                            g.FillPolygon(DesertPen, polypoints.ToArray());
+                            break;
+                        default:
+                            g.FillPolygon(new SolidBrush(Color.Magenta), polypoints.ToArray());
+                            break;
                     }
-                    else if (cnt.mapData.Coast)
+                }
+                foreach (Edges edge in cnt.borders)
+                {
+                    if (edge.mapdata.River > 0)
                     {
-                        g.FillPolygon(coastpen, polypoints.ToArray());
-                    }
-                    else if (cnt.mapData.Water)
-                    {
-                        g.FillPolygon(lakepen, polypoints.ToArray());
-                    }
-                    else 
-                    {
-                        g.FillPolygon(landpend, polypoints.ToArray());
+                        g.DrawLine(new Pen(Color.Aqua,(float)Math.Sqrt((int)edge.mapdata.River)), new PointF((float)edge.voronoiCorner1.location.X * imageratio, (float)edge.voronoiCorner1.location.Y * imageratio), new PointF((float)edge.voronoiCorner2.location.X * imageratio, (float)edge.voronoiCorner2.location.Y * imageratio));
                     }
                 }
             }
