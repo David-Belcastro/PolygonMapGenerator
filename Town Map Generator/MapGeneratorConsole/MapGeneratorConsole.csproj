@@ -73,6 +73,9 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Priority Queue, Version=4.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OptimizedPriorityQueue.4.1.1\lib\net45\Priority Queue.dll</HintPath>
+    </Reference>
     <Reference Include="Rhino.Mocks, Version=3.6.0.0, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
       <HintPath>..\packages\RhinoMocks.3.6.1\lib\net\Rhino.Mocks.dll</HintPath>
     </Reference>
@@ -100,15 +103,18 @@
     <Compile Include="ImageGenerators\Graph\Corners.cs" />
     <Compile Include="ImageGenerators\Graph\Edges.cs" />
     <Compile Include="ImageGenerators\Graph\Line.cs" />
+    <Compile Include="ImageGenerators\Graph\Town.cs" />
     <Compile Include="ImageGenerators\ImageDrawer.cs" />
     <Compile Include="ImageGenerators\IslandFactory.cs" />
     <Compile Include="ImageGenerators\IslandGenerator.cs" />
+    <Compile Include="ImageGenerators\PathfindingQueue.cs" />
     <Compile Include="ImageGenerators\PointGenerator.cs" />
     <Compile Include="ImageGenerators\PolyMap.cs" />
     <Compile Include="DelaunayTriangulator\Delaunay.cs" />
     <Compile Include="DelaunayTriangulator\Edge.cs" />
     <Compile Include="ImageGenerators\ImageGenerator.cs" />
     <Compile Include="DelaunayTriangulator\Point.cs" />
+    <Compile Include="ImageGenerators\TownGenerator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DelaunayTriangulator\Triangle.cs" />

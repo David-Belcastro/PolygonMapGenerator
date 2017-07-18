@@ -17,7 +17,13 @@
 
     public class CenterMapData : BasicMapData
     {
-        internal Biomes Biome { get; set; }
+        public IBiomes Biome { get; set; }
+        public Town Villiage;
+
+        public CenterMapData()
+        {
+            Villiage = new Town();
+        }
     }
 
     public class EdgeMapData : BasicMapData

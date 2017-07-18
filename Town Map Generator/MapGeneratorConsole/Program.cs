@@ -20,14 +20,13 @@ namespace CubesFortune
 
             var variant = 0.1;
             //Console.WriteLine(mapsize);
-            for (var i = 0; i < 10; i++)
-            {
+
                 var generator = new ImageGenerator(new Random().Next());
 
 
                 generator.createimage(mapsize ?? 3600, variant);
                 variant += .1;
-            }
+            
             
             //Console.WriteLine("All Done");
             //Console.ReadLine();
@@ -35,8 +34,7 @@ namespace CubesFortune
 
         private static int? GetUserInputForMapSize(string userinput)
         {
-            int mapsize;
-            if (int.TryParse(userinput, out mapsize) && mapsize >= 10)
+            if (int.TryParse(userinput, out int mapsize) && mapsize >= 10)
             {
                 return mapsize;
             }

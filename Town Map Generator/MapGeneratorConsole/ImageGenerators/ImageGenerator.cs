@@ -14,12 +14,14 @@ namespace Town_Map_Generator
         private CubesVoronoiMapper VoronoiGenerator;
         private ImageDrawer ImagePainter;
         private IslandGenerator IslandGenerator;
+        private TownGenerator TownGenerator;
 
         public ImageGenerator(int seed)
         {
             _RandomSeed = seed;
             ImagePainter = new ImageDrawer();
             IslandGenerator = new IslandGenerator(seed);
+            TownGenerator = new TownGenerator();
         }
 
         internal void createimage(int points, double variant)
@@ -30,6 +32,7 @@ namespace Town_Map_Generator
             var voronoimap = VoronoiGenerator.GimmesomeVeoroiois(pointlist);
             var polymap = new PolyMap(voronoimap, pointlist);
             IslandGenerator.GenerateIsland(polymap, variant);
+            TownGenerator.GenerateCivilization(polymap);
             var b = new Bitmap(1000,1000);
             var g = Graphics.FromImage(b);
             var finallimage = ImagePainter.DrawIsland(pointlist, polymap.edgelist);

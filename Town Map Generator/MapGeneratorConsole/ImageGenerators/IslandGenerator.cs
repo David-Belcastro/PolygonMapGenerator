@@ -56,48 +56,48 @@ namespace Town_Map_Generator
             }
         }
 
-        public Biomes getBiome(CenterMapData cnt)
+        public IBiomes getBiome(CenterMapData cnt)
         {
             if (cnt.Ocean)
             {
-                return Biomes.Ocean;
+                return new Ocean();
             }
             else if (cnt.Water)
             {
-                if (cnt.Elevation < 0.1) return Biomes.Marsh;
-                if (cnt.Elevation > 0.8) return Biomes.Ice;
-                return Biomes.Lake;
+                if (cnt.Elevation < 0.1) return new Marsh();
+                if (cnt.Elevation > 0.8) return new Ice();
+                return new Lake();
             }
             else if (cnt.Coast)
             {
-                return Biomes.Beach;
+                return new Beach();
             }
             else if (cnt.Elevation > 0.8)
             {
-                if (cnt.Moisture > 0.50) return Biomes.Snow;
-                else if (cnt.Moisture > 0.33) return Biomes.Tundra;
-                else if (cnt.Moisture > 0.16) return Biomes.Bare;
-                else return Biomes.Scorched;
+                if (cnt.Moisture > 0.50) return new Snow();
+                else if (cnt.Moisture > 0.33) return new Tundra();
+                else if (cnt.Moisture > 0.16) return new Bare();
+                else return new Scorched();
             }
             else if (cnt.Elevation > 0.6)
             {
-                if (cnt.Moisture > 0.66) return Biomes.Taiga;
-                else if (cnt.Moisture > 0.33) return Biomes.Shrubland;
-                else return Biomes.Plains;
+                if (cnt.Moisture > 0.66) return new Taiga();
+                else if (cnt.Moisture > 0.33) return new Shrubland();
+                else return new Plains();
             }
             else if (cnt.Elevation > 0.3)
             {
-                if (cnt.Moisture > 0.83) return Biomes.TemperateRainForest;
-                else if (cnt.Moisture > 0.50) return Biomes.Forest;
-                else if (cnt.Moisture > 0.16) return Biomes.Grassland;
-                else return Biomes.Plains;
+                if (cnt.Moisture > 0.83) return new TemperateRainForest();
+                else if (cnt.Moisture > 0.50) return new Forest();
+                else if (cnt.Moisture > 0.16) return new Grassland();
+                else return new Plains();
             }
             else
             {
-                if (cnt.Moisture > 0.66) return Biomes.TropicalRainForest;
-                else if (cnt.Moisture > 0.33) return Biomes.Forest;
-                else if (cnt.Moisture > 0.16) return Biomes.Grassland;
-                else return Biomes.Desert;
+                if (cnt.Moisture > 0.66) return new TropicalRainForest();
+                else if (cnt.Moisture > 0.33) return new Forest();
+                else if (cnt.Moisture > 0.16) return new Grassland();
+                else return new Desert();
             }
         }
 

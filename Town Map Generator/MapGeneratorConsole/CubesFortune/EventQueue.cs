@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace CubesFortune
 {
+
     public class EventQueue {
 
         public List<IVoronoiPoint> NodeList = new List<IVoronoiPoint>();

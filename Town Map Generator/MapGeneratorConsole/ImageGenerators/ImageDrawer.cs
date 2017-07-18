@@ -29,23 +29,6 @@ namespace Town_Map_Generator
             float imageratio = 100f;
             var blackpen = new Pen(Color.Black, 1);
             var blackbrusy = new SolidBrush(Color.Black);
-            var OceanPen = new SolidBrush(Color.DarkBlue);
-            var MarshPen = new SolidBrush(Color.Teal);
-            var IcePen = new SolidBrush(Color.GhostWhite);
-            var LakePen = new SolidBrush(Color.Blue);
-            var BeachPen = new SolidBrush(Color.AntiqueWhite);
-            var SnowPen = new SolidBrush(Color.White);
-            var TundraPen = new SolidBrush(Color.Snow);
-            var BarePen = new SolidBrush(Color.LightGray);
-            var ScorchedPen = new SolidBrush(Color.Sienna);
-            var TaigaPen = new SolidBrush(Color.CadetBlue);
-            var ShrublandPen = new SolidBrush(Color.Tan);
-            var PlainsPen = new SolidBrush(Color.Goldenrod);
-            var TemperateRainForestPen = new SolidBrush(Color.DarkGreen);
-            var ForestPen = new SolidBrush(Color.Green);
-            var GrasslandPen = new SolidBrush(Color.LawnGreen);
-            var TropicalRainForestPen = new SolidBrush(Color.YellowGreen);
-            var DesertPen = new SolidBrush(Color.Moccasin);
 
             foreach (Edges poly in mapGraph)
             {
@@ -73,63 +56,10 @@ namespace Town_Map_Generator
                 }
                 if (polypoints.Count > 1)
                 {
-                    switch (cnt.mapData.Biome)
-                    {
-                        case MapGeneratorConsole.ImageGenerators.Biomes.Ocean:
-                            g.FillPolygon(OceanPen, polypoints.ToArray());
-                            break;
-                        case MapGeneratorConsole.ImageGenerators.Biomes.Marsh:
-                            g.FillPolygon(MarshPen, polypoints.ToArray());
-                            break;
-                        case MapGeneratorConsole.ImageGenerators.Biomes.Ice:
-                            g.FillPolygon(IcePen, polypoints.ToArray());
-                            break;
-                        case MapGeneratorConsole.ImageGenerators.Biomes.Lake:
-                            g.FillPolygon(LakePen, polypoints.ToArray());
-                            break;
-                        case MapGeneratorConsole.ImageGenerators.Biomes.Beach:
-                            g.FillPolygon(BeachPen, polypoints.ToArray());
-                            break;
-                        case MapGeneratorConsole.ImageGenerators.Biomes.Snow:
-                            g.FillPolygon(SnowPen, polypoints.ToArray());
-                            break;
-                        case MapGeneratorConsole.ImageGenerators.Biomes.Tundra:
-                            g.FillPolygon(TundraPen, polypoints.ToArray());
-                            break;
-                        case MapGeneratorConsole.ImageGenerators.Biomes.Bare:
-                            g.FillPolygon(BarePen, polypoints.ToArray());
-                            break;
-                        case MapGeneratorConsole.ImageGenerators.Biomes.Scorched:
-                            g.FillPolygon(ScorchedPen, polypoints.ToArray());
-                            break;
-                        case MapGeneratorConsole.ImageGenerators.Biomes.Taiga:
-                            g.FillPolygon(TaigaPen, polypoints.ToArray());
-                            break;
-                        case MapGeneratorConsole.ImageGenerators.Biomes.Shrubland:
-                            g.FillPolygon(ShrublandPen, polypoints.ToArray());
-                            break;
-                        case MapGeneratorConsole.ImageGenerators.Biomes.Plains:
-                            g.FillPolygon(PlainsPen, polypoints.ToArray());
-                            break;
-                        case MapGeneratorConsole.ImageGenerators.Biomes.TemperateRainForest:
-                            g.FillPolygon(TemperateRainForestPen, polypoints.ToArray());
-                            break;
-                        case MapGeneratorConsole.ImageGenerators.Biomes.Forest:
-                            g.FillPolygon(ForestPen, polypoints.ToArray());
-                            break;
-                        case MapGeneratorConsole.ImageGenerators.Biomes.Grassland:
-                            g.FillPolygon(GrasslandPen, polypoints.ToArray());
-                            break;
-                        case MapGeneratorConsole.ImageGenerators.Biomes.TropicalRainForest:
-                            g.FillPolygon(TropicalRainForestPen, polypoints.ToArray());
-                            break;
-                        case MapGeneratorConsole.ImageGenerators.Biomes.Desert:
-                            g.FillPolygon(DesertPen, polypoints.ToArray());
-                            break;
-                        default:
-                            g.FillPolygon(new SolidBrush(Color.Magenta), polypoints.ToArray());
-                            break;
-                    }
+                    g.DrawPolygon(blackpen, polypoints.ToArray());
+                            g.FillPolygon(cnt.mapData.Biome.MapColor(), polypoints.ToArray());
+ 
+                    
                 }
                 foreach (Edges edge in cnt.borders)
                 {
@@ -139,8 +69,15 @@ namespace Town_Map_Generator
                     }
                 }
             }
+            var landlist = centerlist.FindAll(x => x.mapData.Water == false);
+            var rnd = new Random();
+            var font = new Font("Arial", 15);
+            foreach (KeyValuePair<Centers,int> node in landlist[rnd.Next(landlist.Count())].mapData.Villiage.DistanceToAllTowns())
+            {
+                g.DrawString(node.Value.ToString(),font,blackbrusy, new PointF((float)node.Key.center.X * imageratio, (float)node.Key.center.Y * imageratio));
+            }
 
-            return b;
+                return b;
         }
 
         public Bitmap DrawVoronoi(List<VoronoiPoint> pointlist, VoronoiMap voronoimap)
