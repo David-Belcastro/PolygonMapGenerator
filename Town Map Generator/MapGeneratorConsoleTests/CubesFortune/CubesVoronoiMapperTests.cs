@@ -21,21 +21,6 @@ namespace CubesFortune.CubesFortune.Tests
         }
 
 
-        [TestMethod()]
-        public void GimmesomeVeoroioisTest_4VerticalPointsInALine_ReturnsLineAtMid()
-        {
-            var mockedMapper = new CubesVoronoiMapper() { };
-            var points = new List<VoronoiPoint> { new VoronoiPoint(100, 100), new VoronoiPoint(100, 200), new VoronoiPoint(100, 300), new VoronoiPoint(100, 400) };
-            var finalpoints = mockedMapper.GimmesomeVeoroiois(points);
-            Assert.AreEqual(3,finalpoints.graph.Count);
-            
-            for (int i = 0; i < finalpoints.graph.Count; i++)
-            {
-                Assert.AreEqual((i+1)*100+50, finalpoints.graph[i].start.Y);
-                Assert.AreEqual((i + 1) * 100 + 50, finalpoints.graph[i].end.Y);
-            }
-
-        }
 
         [TestMethod()]
         public void GimmesomeVeoroioisTest_4SquarePoints_ReturnsDividedatQuadrents()
@@ -44,9 +29,9 @@ namespace CubesFortune.CubesFortune.Tests
             var points = new List<VoronoiPoint> { new VoronoiPoint(2.5, 2.5), new VoronoiPoint(7.5, 2.5), new VoronoiPoint(7.5, 7.5), new VoronoiPoint(2.5, 7.5) };
             var finalpoints = mockedMapper.GimmesomeVeoroiois(points);
             foreach (VoronoiSegment seg in finalpoints.graph)
-            Assert.AreEqual(7, finalpoints.graph.Count);
-           // Assert.AreEqual(5.0, finalpoints.graph[0].start.Y);
-            //Assert.AreEqual(5.0, finalpoints.graph[0].end.Y);
+           // Assert.AreEqual(7, finalpoints.graph.Count);
+            Assert.AreEqual(5.0, finalpoints.graph[0].start.Y);
+          Assert.AreEqual(5.0, finalpoints.graph[0].end.Y);
             
 
         }

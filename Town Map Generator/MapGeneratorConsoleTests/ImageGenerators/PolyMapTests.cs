@@ -20,7 +20,7 @@ namespace Town_Map_Generator.Tests
             var points = new List<VoronoiPoint> { new VoronoiPoint(2.5, 2.5), new VoronoiPoint(7.5, 2.5), new VoronoiPoint(7.5, 7.5), new VoronoiPoint(2.5, 7.5), new VoronoiPoint(5, 5) };
             var vmap = new CubesFortune.CubesVoronoiMapper().GimmesomeVeoroiois(points);
             var sut = new PolyMap(vmap, points);
-            Assert.AreEqual(5, sut.edgelist.Count);
+            Assert.AreEqual(6, sut.edgelist.Count);
         }
 
         [TestMethod()]

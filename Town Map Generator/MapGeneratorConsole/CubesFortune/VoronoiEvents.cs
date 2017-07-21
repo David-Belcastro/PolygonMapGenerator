@@ -17,6 +17,7 @@ namespace CubesFortune
         bool IsCircleEvent { get; }
 
         bool IsSiteEvent { get; }
+        float NodePriority { get; }
     }
 
     public class SiteEvent : IVoronoiPoint
@@ -43,6 +44,7 @@ namespace CubesFortune
             }
         }
 
+
         public bool IsSiteEvent
         {
             get
@@ -50,6 +52,8 @@ namespace CubesFortune
                 return true;
             }
         }
+
+        public float NodePriority { get { return (float)X ; } }
     }
 
 
@@ -109,6 +113,8 @@ namespace CubesFortune
                 return false;
             }
         }
+
+        public float NodePriority { get { return (float)circleLength; } }
 
     }
 

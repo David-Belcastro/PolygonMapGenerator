@@ -45,6 +45,7 @@ namespace Town_Map_Generator
             }
 
             var maxelev = centerlist.Max(x => x.mapData.Elevation);
+            var font = new Font("Arial", 15);
            foreach (Centers cnt in centerlist)
 
             {
@@ -69,15 +70,37 @@ namespace Town_Map_Generator
                     }
                 }
             }
-            var landlist = centerlist.FindAll(x => x.mapData.Water == false);
-            var rnd = new Random();
-            var font = new Font("Arial", 15);
-            foreach (KeyValuePair<Centers,int> node in landlist[rnd.Next(landlist.Count())].mapData.Villiage.DistanceToAllTowns())
-            {
-                g.DrawString(node.Value.ToString(),font,blackbrusy, new PointF((float)node.Key.center.X * imageratio, (float)node.Key.center.Y * imageratio));
+            var landlist = centerlist.FindAll(x => x.mapData.Water == false && x.mapData.Villiage.CurrentEconPull != 0);
+
+            var metrobrush = new SolidBrush(Color.Red);
+            var bigcityBrush = new SolidBrush(Color.Maroon);
+
+            foreach (Centers cnt in landlist){
+                switch (cnt.mapData.Villiage.TownCategory())
+                {
+                    case TownSize.Metropolis:
+                        g.FillEllipse(metrobrush, (float)cnt.center.X * imageratio - 6.5f, (float)cnt.center.Y * imageratio -6.5f, 13, 13);
+                        break;
+                    case TownSize.BigCity:
+                        g.FillRectangle(bigcityBrush, (float)cnt.center.X * imageratio - 3.5f, (float)cnt.center.Y * imageratio - 3.5f, 7, 7);
+                        break;
+                    case TownSize.City:
+                        g.FillRectangle(blackbrusy, (float)cnt.center.X * imageratio - 3.5f, (float)cnt.center.Y * imageratio - 3.5f, 7, 7);
+                        break;
+                    case TownSize.Town:
+                        g.FillRectangle(blackbrusy, (float)cnt.center.X * imageratio - 2.5f, (float)cnt.center.Y * imageratio - 2.5f, 5, 5);
+                        break;
+                    case TownSize.SmallTown:
+                        g.FillEllipse(blackbrusy, (float)cnt.center.X * imageratio - 2.5f, (float)cnt.center.Y * imageratio - 2.5f, 5, 5);
+                        break;
+                    default:
+                        break;
+                }
+
+             //   g.DrawString(cnt.mapData.Villiage.CurrentEconPull.ToString(), font, blackbrusy, new PointF((float)cnt.center.X * imageratio, (float)cnt.center.Y * imageratio));
             }
 
-                return b;
+            return b;
         }
 
         public Bitmap DrawVoronoi(List<VoronoiPoint> pointlist, VoronoiMap voronoimap)

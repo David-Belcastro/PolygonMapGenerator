@@ -54,6 +54,10 @@ namespace Town_Map_Generator
             {
                 cnt.mapData.Biome = getBiome(cnt.mapData);
             }
+            foreach (Centers cnt in _basegraph.centerlist)
+            {
+                cnt.mapData.EconomicPullValue(cnt);
+            }
         }
 
         public IBiomes getBiome(CenterMapData cnt)

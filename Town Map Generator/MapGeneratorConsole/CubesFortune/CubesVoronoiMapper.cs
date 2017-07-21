@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Priority_Queue;
 using ceometric.DelaunayTriangulator;
 using System.Linq;
 using System.Text;
@@ -24,28 +25,28 @@ namespace CubesFortune
 
     public class CubesVoronoiMapper
     {
-        public EventQueue eventQ;
-        public CircleQueue circleQ;
+        public FastPriorityQueue<FastSiteQueueNode> eventQ;
+        public FastPriorityQueue<FastCircleQueueNode> circleQ;
         public SweepTable regionsT;
 
         public CubesVoronoiMapper()
         {
-            eventQ = new EventQueue();
-            circleQ = new CircleQueue();
             regionsT = new SweepTable();
         }
 
         public VoronoiMap GimmesomeVeoroiois(List<VoronoiPoint> sites)
         {
+            eventQ = new FastPriorityQueue<FastSiteQueueNode>(sites.Count+1);
+            circleQ = new FastPriorityQueue<FastCircleQueueNode>(sites.Count * sites.Count);
 
             foreach (VoronoiPoint pt in sites)
             {
                 var pointasevent = new SiteEvent(pt);
-                eventQ.AddNode(pointasevent);
+                eventQ.Enqueue(new FastSiteQueueNode(pointasevent), pointasevent.NodePriority);
             }
 
-            while (!eventQ.IsEmpty())
-            {   if (!circleQ.IsEmpty() && circleQ.PeekSmallest().circleLength <= eventQ.PeekSmallest().X)
+            while (eventQ.Count != 0)
+            {   if (circleQ.Count != 0 && circleQ.First().point.circleLength <= eventQ.First().point.X)
                 {
                     ProcessCircleEvent();
                 }
@@ -55,7 +56,7 @@ namespace CubesFortune
                 }
             }
 
-            while (!circleQ.IsEmpty())
+            while (circleQ.Count != 0)
             {
                 ProcessCircleEvent();
             }
@@ -66,14 +67,14 @@ namespace CubesFortune
 
         public void ProcessCircleEvent()
         {
-            var p = circleQ.PeekAndRemoveSmallest();
+            var p = circleQ.Dequeue().point;
             regionsT.ProcessCircleEvent(p);
             AddCreatedCircleEvents();
         }
 
         public void ProcessPointEvent()
         {
-            var p = eventQ.PeekAndRemoveSmallest();
+            var p = eventQ.Dequeue().point;
             var pointAsEvent = new SiteEvent(p.basepoint);
             regionsT.AddToBeachLine(pointAsEvent);
             AddCreatedCircleEvents();
@@ -83,7 +84,7 @@ namespace CubesFortune
         {
             foreach (CircleEvent circ in regionsT.GetCurrentCircleEvents())
             {
-                circleQ.AddNode(circ);
+                circleQ.Enqueue(new FastCircleQueueNode(circ), circ.NodePriority);
             }
         }
     }

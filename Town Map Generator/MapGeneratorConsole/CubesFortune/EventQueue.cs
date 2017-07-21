@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Priority_Queue;
 
 namespace CubesFortune
 {
@@ -62,5 +63,26 @@ namespace CubesFortune
             });
         }
 
+    }
+
+    public class FastSiteQueueNode : FastPriorityQueueNode
+    {
+        public SiteEvent point;
+
+        public FastSiteQueueNode(SiteEvent eventpt)
+        {
+            point = eventpt;
+        }
+
+    }
+
+    public class FastCircleQueueNode : FastPriorityQueueNode
+    {
+        public CircleEvent point;
+
+        public FastCircleQueueNode(CircleEvent eventpt)
+        {
+            point = eventpt;
+        }
     }
 }

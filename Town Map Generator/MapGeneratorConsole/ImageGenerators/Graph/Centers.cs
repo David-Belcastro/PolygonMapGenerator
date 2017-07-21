@@ -21,7 +21,7 @@ namespace MapGeneratorConsole.ImageGenerators.Graph
             neigbors = new List<Centers>();
             borders = new List<Edges>();
             corners = new List<Corners>();
-            mapData = new CenterMapData();
+            mapData = new CenterMapData(this);
         }
         public List<Corners> SortedCorners()
         {
